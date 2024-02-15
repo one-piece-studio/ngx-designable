@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --base-href=/ngx-designable/ && node add-404-html.js",
+    "build": "ng build && node add-404-html.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "eslint": "eslint .",
