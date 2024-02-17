@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'app-studio-panel',
+  selector: 'app-composite-panel',
   standalone: true,
   imports: [],
   template: `
@@ -12,4 +12,4 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class StudioPanelComponent {}
+export class CompositePanelComponent {}
