@@ -1,15 +1,26 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { usePrefix } from '@/app/utils';
 
 @Component({
   selector: 'app-workspace-panel',
   standalone: true,
   imports: [],
   template: `
-    <div>
+    <div class="{{ prefix }}">
       <ng-content></ng-content>
     </div>
   `,
-  styles: [``],
+  styles: [
+    `
+      :host {
+        display: flex;
+        flex-grow: 1;
+      }
+    `
+  ],
+  styleUrls: ['./styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkspacePanelComponent {}
+export class WorkspacePanelComponent {
+  prefix = usePrefix('workspace-panel');
+}

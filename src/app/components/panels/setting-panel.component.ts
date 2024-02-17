@@ -1,15 +1,25 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { usePrefix } from '@/app/utils';
 
 @Component({
   selector: 'app-setting-panel',
   standalone: true,
   imports: [],
   template: `
-    <div>
+    <div class="{{ prefix }}">
       <ng-content></ng-content>
     </div>
   `,
-  styles: [``],
+  styles: [
+    `
+      :host {
+        display: flex;
+      }
+    `
+  ],
+  styleUrls: ['./styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SettingPanelComponent {}
+export class SettingPanelComponent {
+  prefix: string = usePrefix('settings-panel');
+}

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { SharedModule } from '@/app/shared/shared.module';
-import { APP_PREFIX } from '@/app/constant/constant';
+import { usePrefix } from '@/app/utils';
 
 @Component({
   selector: 'app-studio-panel',
@@ -26,7 +26,7 @@ import { APP_PREFIX } from '@/app/constant/constant';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudioPanelComponent implements OnInit {
-  prefix = APP_PREFIX + 'main-panel';
+  prefix = usePrefix('main-panel');
   classNameList: string[] = [];
 
   ngOnInit(): void {
