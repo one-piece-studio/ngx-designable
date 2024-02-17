@@ -3,7 +3,10 @@ import { DesignerComponent } from '../../components/container/designer.component
 import { WorkbenchComponent } from '@/app/components/container/workbench.component';
 import { SharedModule } from '@/app/shared/shared.module';
 import { StudioPanelComponent } from '@/app/components/panels/studio-panel.component';
-import { CompositePanelComponent } from '@/app/components/panels/composite-panel.component';
+import {
+  CompositePanelComponent,
+  CompositePanelItemComponent
+} from '@/app/components/panels/composite-panel.component';
 import { WorkspacePanelComponent } from '@/app/components/panels/workspace-panel.component';
 import { SettingPanelComponent } from '@/app/components/panels/setting-panel.component';
 
@@ -17,7 +20,8 @@ import { SettingPanelComponent } from '@/app/components/panels/setting-panel.com
     StudioPanelComponent,
     CompositePanelComponent,
     WorkspacePanelComponent,
-    SettingPanelComponent
+    SettingPanelComponent,
+    CompositePanelItemComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.less'
