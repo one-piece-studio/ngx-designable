@@ -1,7 +1,18 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ContentChildren, Input, QueryList } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ContentChildren,
+  Input,
+  QueryList
+} from '@angular/core';
 import { usePrefix } from '@/app/utils';
 import { IconWidget } from '@/app/components/widgets/icon/icon.widget';
 import { SharedModule } from '@/app/shared/shared.module';
+import { IconType } from '@/app/components/icons/icon.type';
+import { IconFactory, IconFactoryProvider } from '@/app/components/icons/icon.factory';
+import { IconRegister } from '@/app/components/icons/icon.register';
 
 @Component({
   selector: 'app-composite-panel-item',
@@ -26,8 +37,8 @@ export class CompositePanelItemComponent {
   template: `
     <div class="{{ prefix }}">
       <div class="{{ prefix }}-tabs">
-        <ng-container *ngFor="let item of panelItemList">
-          <app-icon></app-icon>
+        <ng-container *ngFor="let icon of iconItemList">
+          <app-icon [icon]="icon"></app-icon>
         </ng-container>
       </div>
       <div class="{{ prefix }}-tabs-content">
@@ -43,6 +54,7 @@ export class CompositePanelItemComponent {
     `
   ],
   styleUrls: ['./styles.less'],
+  providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompositePanelComponent implements AfterViewInit {
@@ -50,7 +62,12 @@ export class CompositePanelComponent implements AfterViewInit {
 
   @ContentChildren(CompositePanelItemComponent) panelItemList: QueryList<CompositePanelItemComponent> | undefined;
 
+  iconItemList: IconType[] = [];
+
+  constructor(private cdr: ChangeDetectorRef) {}
+
   ngAfterViewInit(): void {
-    console.log('panelItemList>>>', this.panelItemList);
+    this.iconItemList = this.panelItemList?.toArray().map(v => v.icon as IconType);
+    this.cdr.markForCheck();
   }
 }
