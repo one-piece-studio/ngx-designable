@@ -13,6 +13,7 @@ import { SharedModule } from '@/app/shared/shared.module';
 import { IconType } from '@/app/components/icons/icon.type';
 import { IconFactory, IconFactoryProvider } from '@/app/components/icons/icon.factory';
 import { IconRegister } from '@/app/components/icons/icon.register';
+import { TextWidget } from '@/app/components/widgets/text/text.widget';
 
 @Component({
   selector: 'app-composite-panel-item',
@@ -33,16 +34,26 @@ export class CompositePanelItemComponent {
 @Component({
   selector: 'app-composite-panel',
   standalone: true,
-  imports: [IconWidget, SharedModule],
+  imports: [IconWidget, SharedModule, TextWidget],
   template: `
     <div class="{{ prefix }}">
       <div class="{{ prefix }}-tabs">
-        <ng-container *ngFor="let icon of iconItemList">
-          <app-icon [icon]="icon"></app-icon>
+        <ng-container *ngFor="let icon of iconItemList; let i = index">
+          <div class="{{ prefix }}-tabs-pane" [class.active]="activeKey === i" (click)="changeActiveTab(i)">
+            <app-icon [icon]="icon"></app-icon>
+          </div>
         </ng-container>
       </div>
       <div class="{{ prefix }}-tabs-content">
-        <ng-content></ng-content>
+        <div class="{{ prefix }}-tabs-header">
+          <div class="{{ prefix }}-tabs-header-title">
+            <app-text [title]="activeTitle"></app-text>
+          </div>
+          <div class="{{ prefix }}-tabs-header-actions"> </div>
+        </div>
+        <div class="{{ prefix }}-tabs-body">
+          <ng-content></ng-content>
+        </div>
       </div>
     </div>
   `,
@@ -64,10 +75,26 @@ export class CompositePanelComponent implements AfterViewInit {
 
   iconItemList: IconType[] = [];
 
+  titleItemList: string[] = [];
+
+  activeKey: number = 0;
+
+  activeTitle: string;
+
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
-    this.iconItemList = this.panelItemList?.toArray().map(v => v.icon as IconType);
+    const list = this.panelItemList?.toArray();
+    if (list) {
+      this.iconItemList = list.map(v => v.icon as IconType);
+      this.titleItemList = list.map(v => v.title);
+      this.activeTitle = this.titleItemList[this.activeKey];
+    }
     this.cdr.markForCheck();
+  }
+
+  changeActiveTab(key: number) {
+    this.activeKey = key;
+    this.activeTitle = this.titleItemList[this.activeKey];
   }
 }
