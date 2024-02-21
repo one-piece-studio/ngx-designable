@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { RegistryService } from '@/app/services/registry.service';
 
 @Component({
   selector: 'app-text',
@@ -10,6 +11,8 @@ export class TextWidget implements OnChanges {
 
   currentText: string;
 
+  constructor(private registry: RegistryService) {}
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.title && changes.title.currentValue) {
       this.fixLocaleText(this.title);
@@ -17,6 +20,7 @@ export class TextWidget implements OnChanges {
   }
 
   fixLocaleText(text: string) {
-    this.currentText = text;
+    const message = this.registry.getDesignerMessage(text);
+    this.currentText = message;
   }
 }
