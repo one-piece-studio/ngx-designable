@@ -19,7 +19,7 @@ import { TextWidget } from '@/app/components/widgets/text/text.widget';
   selector: 'app-composite-panel-item',
   standalone: true,
   imports: [],
-  template: ` <div class="{{ prefix }}"> </div> `,
+  template: ` <ng-content></ng-content> `,
   styleUrls: ['./styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -27,8 +27,6 @@ export class CompositePanelItemComponent {
   @Input() title: string | undefined;
 
   @Input() icon: string | undefined;
-
-  prefix = usePrefix('composite-panel');
 }
 
 @Component({

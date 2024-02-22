@@ -4,7 +4,11 @@
       <p logo>logo</p>
       <div action>action</div>
       <app-composite-panel>
-        <app-composite-panel-item title="panels.Component" icon="Component"></app-composite-panel-item>
+        <app-composite-panel-item title="panels.Component" icon="Component">
+          <app-resource title="sources.Inputs" [sources]="resourceList"></app-resource>
+          <app-resource title="sources.Displays" [sources]="resourceList"></app-resource>
+          <app-resource title="sources.Feedbacks" [sources]="resourceList"></app-resource>
+        </app-composite-panel-item>
         <app-composite-panel-item title="panels.OutlinedTree" icon="Outline"></app-composite-panel-item>
         <app-composite-panel-item title="panels.History" icon="History"></app-composite-panel-item>
       </app-composite-panel>
