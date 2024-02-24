@@ -12,11 +12,11 @@ export class IconFactory {
     return this._icons;
   }
 
-  has(type: IconType) {
+  has(type: string) {
     return !!this._icons[type];
   }
 
-  getIcon(type: IconType) {
+  getIcon(type: string) {
     if (this.has(type)) {
       return this._icons[type];
     }
@@ -28,12 +28,16 @@ export class IconFactory {
 export class IconFactoryProvider {
   constructor(private factory: IconFactory) {}
 
-  createSvg(type: IconType, container: ViewContainerRef) {
+  createSvg(type: string, container: ViewContainerRef) {
     if (!this.factory.has(type)) {
       throw new Error(`Icon ${type} not found`);
     }
 
     const comp = this.factory.getIcon(type);
     return container?.createComponent(comp);
+  }
+
+  find(type: string) {
+    return this.factory.getIcon(type);
   }
 }

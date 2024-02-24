@@ -14,8 +14,11 @@ import global from '../locales/global';
 export class RegistryService {
   DESIGNER_LOCALES_STORE = {};
 
+  DESIGNER_LANGUAGE_STORE: string;
+
   constructor() {
     this.registerDesignerLocales(icons, panels, global, operations);
+    this.DESIGNER_LANGUAGE_STORE = this.getBrowserLanguage();
   }
 
   lowerSnake = (str: string) => {
@@ -48,6 +51,14 @@ export class RegistryService {
     packages.forEach(locale => {
       this.mergeLocales(this.DESIGNER_LOCALES_STORE, locale);
     });
+  };
+
+  setDesignerLanguage = (lang: string) => {
+    this.DESIGNER_LANGUAGE_STORE = lang;
+  };
+
+  getDesignerLanguage = () => {
+    return this.getISOCode(this.DESIGNER_LANGUAGE_STORE);
   };
 
   getDesignerMessage = (token: string, locales?: IDesignerLocales) => {

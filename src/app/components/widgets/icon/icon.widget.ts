@@ -12,21 +12,36 @@ import { usePrefix } from '@/app/utils';
 import { ComponentSvg } from '@/app/components/icons/component';
 import { IconFactoryProvider } from '@/app/components/icons/icon.factory';
 import { IconType } from '@/app/components/icons/icon.type';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-icon',
   standalone: true,
-  imports: [ComponentSvg],
-  template: ` <div class="{{ prefix }}"><div #container></div></div> `,
+  imports: [ComponentSvg, NgOptimizedImage],
+  template: `
+    <div class="{{ prefix }}">
+      @if (isRegister) {
+        <div #container></div>
+      } @else {
+        <img ngSrc="{{ icon }}" [height]="size" [width]="size" alt="" />
+      }
+    </div>
+  `,
   styleUrls: ['./icon.widget.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconWidget implements OnChanges, AfterViewInit {
-  @Input() icon: IconType;
+  @Input() icon: string;
+
+  @Input() size: number | string = '1em';
+
+  @Input() style: Partial<CSSStyleDeclaration>;
 
   @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef | undefined;
 
   prefix = usePrefix('icon');
+
+  isRegister: boolean = true;
 
   constructor(private iconFactoryProvider: IconFactoryProvider) {}
 
@@ -41,6 +56,14 @@ export class IconWidget implements OnChanges, AfterViewInit {
   }
 
   createSvg() {
-    this.iconFactoryProvider.createSvg(this.icon, this.container);
+    const widget = this.iconFactoryProvider.find(this.icon);
+    this.isRegister = !!widget;
+    if (widget && this.container) {
+      this.container.clear();
+      const componentRef = this.iconFactoryProvider.createSvg(this.icon, this.container) as any;
+      componentRef.instance.width = this.style?.width || this.size;
+      componentRef.instance.height = this.style?.height || this.size;
+      componentRef.changeDetectorRef?.detectChanges();
+    }
   }
 }

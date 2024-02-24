@@ -37,6 +37,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.registerLocales();
+    this.createResources();
   }
 
   registerLocales() {

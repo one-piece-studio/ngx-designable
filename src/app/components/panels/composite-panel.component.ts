@@ -5,7 +5,8 @@ import {
   Component,
   ContentChildren,
   Input,
-  QueryList
+  QueryList,
+  signal
 } from '@angular/core';
 import { usePrefix } from '@/app/utils';
 import { IconWidget } from '@/app/components/widgets/icon/icon.widget';
@@ -14,12 +15,17 @@ import { IconType } from '@/app/components/icons/icon.type';
 import { IconFactory, IconFactoryProvider } from '@/app/components/icons/icon.factory';
 import { IconRegister } from '@/app/components/icons/icon.register';
 import { TextWidget } from '@/app/components/widgets/text/text.widget';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-composite-panel-item',
   standalone: true,
-  imports: [],
-  template: ` <ng-content></ng-content> `,
+  imports: [NgIf],
+  template: `
+    <ng-container *ngIf="visible()">
+      <ng-content></ng-content>
+    </ng-container>
+  `,
   styleUrls: ['./styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -27,6 +33,12 @@ export class CompositePanelItemComponent {
   @Input() title: string | undefined;
 
   @Input() icon: string | undefined;
+
+  visible = signal<boolean>(false);
+
+  changeVisible(visible: boolean) {
+    this.visible.set(visible);
+  }
 }
 
 @Component({
@@ -73,26 +85,29 @@ export class CompositePanelComponent implements AfterViewInit {
 
   iconItemList: IconType[] = [];
 
-  titleItemList: string[] = [];
-
   activeKey: number = 0;
 
   activeTitle: string;
 
+  visible = signal<boolean>(true);
+
+  pinning = signal<boolean>(false);
+
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit(): void {
-    const list = this.panelItemList?.toArray();
-    if (list) {
-      this.iconItemList = list.map(v => v.icon as IconType);
-      this.titleItemList = list.map(v => v.title);
-      this.activeTitle = this.titleItemList[this.activeKey];
-    }
+    this.changeActiveTab(0);
     this.cdr.markForCheck();
   }
 
   changeActiveTab(key: number) {
     this.activeKey = key;
-    this.activeTitle = this.titleItemList[this.activeKey];
+    const list = this.panelItemList?.toArray();
+    if (Array.isArray(list) && list.length) {
+      this.iconItemList = list.map(v => v.icon as IconType);
+      const titleItemList = list.map(v => v.title);
+      this.activeTitle = titleItemList[this.activeKey];
+      list.forEach((v, i) => v.changeVisible(i === this.activeKey));
+    }
   }
 }

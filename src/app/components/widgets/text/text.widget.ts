@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { RegistryService } from '@/app/services/registry.service';
+import { IDesignerMiniLocales } from '@/app/core/types';
 
 @Component({
   selector: 'app-text',
@@ -7,7 +8,7 @@ import { RegistryService } from '@/app/services/registry.service';
   standalone: true
 })
 export class TextWidget implements OnChanges {
-  @Input() title: string;
+  @Input() title: string | IDesignerMiniLocales;
 
   currentText: string;
 
@@ -19,8 +20,22 @@ export class TextWidget implements OnChanges {
     }
   }
 
-  fixLocaleText(text: string) {
-    const message = this.registry.getDesignerMessage(text);
-    this.currentText = message;
+  fixLocaleText(text: string | IDesignerMiniLocales) {
+    if (typeof text === 'string') {
+      this.currentText = this.registry.getDesignerMessage(text);
+    } else {
+      const takeLocale = (message: string | IDesignerMiniLocales) => {
+        if (typeof message == 'string') return message;
+        if (typeof message == 'object') {
+          const lang = this.registry.getDesignerLanguage();
+          for (let key in message) {
+            if (key.toLocaleLowerCase() === lang) return message[key];
+          }
+          return '';
+        }
+        return message;
+      };
+      this.currentText = takeLocale(text);
+    }
   }
 }

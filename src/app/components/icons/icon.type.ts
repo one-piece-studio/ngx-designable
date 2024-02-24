@@ -1,5 +1,9 @@
 export enum IconType {
-  COMPONENT = 'Component',
-  OUTLINE = 'Outline',
-  HISTORY = 'History'
+  Component = 'Component',
+  Outline = 'Outline',
+  History = 'History',
+  Expand = 'Expand',
+  InputSource = 'InputSource',
+  TextAreaSource = 'TextAreaSource',
+  CardSource = 'CardSource'
 }
