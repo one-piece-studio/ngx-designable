@@ -5,5 +5,8 @@ export enum IconType {
   Expand = 'Expand',
   InputSource = 'InputSource',
   TextAreaSource = 'TextAreaSource',
-  CardSource = 'CardSource'
+  CardSource = 'CardSource',
+  PushPinOutlined = 'PushPinOutlined',
+  PushPinFilled = 'PushPinFilled',
+  Close = 'Close'
 }

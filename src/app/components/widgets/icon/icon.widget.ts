@@ -11,7 +11,6 @@ import {
 import { usePrefix } from '@/app/utils';
 import { ComponentSvg } from '@/app/components/icons/component';
 import { IconFactoryProvider } from '@/app/components/icons/icon.factory';
-import { IconType } from '@/app/components/icons/icon.type';
 import { NgOptimizedImage } from '@angular/common';
 
 @Component({
@@ -19,7 +18,7 @@ import { NgOptimizedImage } from '@angular/common';
   standalone: true,
   imports: [ComponentSvg, NgOptimizedImage],
   template: `
-    <div class="{{ prefix }}">
+    <div class="{{ prefix }} {{ classname }}" [style]="style">
       @if (isRegister) {
         <div #container></div>
       } @else {
@@ -27,13 +26,15 @@ import { NgOptimizedImage } from '@angular/common';
       }
     </div>
   `,
-  styleUrls: ['./icon.widget.less'],
+  styleUrls: ['./icon.widget.less', '../../styles/styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class IconWidget implements OnChanges, AfterViewInit {
   @Input() icon: string;
 
   @Input() size: number | string = '1em';
+
+  @Input() classname: string;
 
   @Input() style: Partial<CSSStyleDeclaration>;
 

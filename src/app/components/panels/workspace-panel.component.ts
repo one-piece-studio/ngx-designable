@@ -18,7 +18,7 @@ import { usePrefix } from '@/app/utils';
       }
     `
   ],
-  styleUrls: ['./styles.less'],
+  styleUrls: ['../styles/styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WorkspacePanelComponent {

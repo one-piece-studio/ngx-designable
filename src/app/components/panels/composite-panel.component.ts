@@ -26,7 +26,7 @@ import { NgIf } from '@angular/common';
       <ng-content></ng-content>
     </ng-container>
   `,
-  styleUrls: ['./styles.less'],
+  styleUrls: ['../styles/styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompositePanelItemComponent {
@@ -54,12 +54,34 @@ export class CompositePanelItemComponent {
           </div>
         </ng-container>
       </div>
-      <div class="{{ prefix }}-tabs-content">
+      <div class="{{ prefix }}-tabs-content" [class.pinning]="pinning()" *ngIf="visible()">
         <div class="{{ prefix }}-tabs-header">
           <div class="{{ prefix }}-tabs-header-title">
             <app-text [title]="activeTitle"></app-text>
           </div>
-          <div class="{{ prefix }}-tabs-header-actions"> </div>
+          <div class="{{ prefix }}-tabs-header-actions">
+            <div class="{{ prefix }}-tabs-header-extra"> </div>
+            <div *ngIf="!pinning()" (click)="pinningChange()">
+              <app-icon
+                icon="PushPinOutlined"
+                classname="{{ prefix }}-tabs-header-pin"
+                [style]="{ cursor: 'pointer' }"
+              ></app-icon>
+            </div>
+            <div *ngIf="pinning()" (click)="pinningChange()">
+              <app-icon
+                icon="PushPinFilled"
+                classname="{{ prefix }}-tabs-header-pin-filled"
+                [style]="{ cursor: 'pointer' }"
+              ></app-icon>
+            </div>
+            <app-icon
+              icon="Close"
+              classname="{{ prefix }}-tabs-header-close"
+              [style]="{ cursor: 'pointer' }"
+              (click)="close()"
+            ></app-icon>
+          </div>
         </div>
         <div class="{{ prefix }}-tabs-body">
           <ng-content></ng-content>
@@ -74,7 +96,7 @@ export class CompositePanelItemComponent {
       }
     `
   ],
-  styleUrls: ['./styles.less'],
+  styleUrls: ['../styles/styles.less'],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -85,7 +107,7 @@ export class CompositePanelComponent implements AfterViewInit {
 
   iconItemList: IconType[] = [];
 
-  activeKey: number = 0;
+  activeKey: number = -1;
 
   activeTitle: string;
 
@@ -101,6 +123,11 @@ export class CompositePanelComponent implements AfterViewInit {
   }
 
   changeActiveTab(key: number) {
+    if (this.activeKey == key) {
+      this.visible.update(v => !v);
+    } else {
+      this.visible.set(true);
+    }
     this.activeKey = key;
     const list = this.panelItemList?.toArray();
     if (Array.isArray(list) && list.length) {
@@ -109,5 +136,13 @@ export class CompositePanelComponent implements AfterViewInit {
       this.activeTitle = titleItemList[this.activeKey];
       list.forEach((v, i) => v.changeVisible(i === this.activeKey));
     }
+  }
+
+  pinningChange() {
+    this.pinning.update(v => !v);
+  }
+
+  close() {
+    this.visible.set(false);
   }
 }

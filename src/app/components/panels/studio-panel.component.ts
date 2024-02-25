@@ -22,7 +22,7 @@ import { usePrefix } from '@/app/utils';
     </div>
   `,
   styles: [``],
-  styleUrls: ['./styles.less'],
+  styleUrls: ['../styles/styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class StudioPanelComponent implements OnInit {
