@@ -1,3 +1,12 @@
+import { Engine } from '@/app/core/models';
+
+export type IEngineContext = {
+  workspace: any;
+  workbench: any;
+  engine: Engine;
+  viewport: any;
+};
+
 export interface IDesignerLocales {
   [ISOCode: string]: {
     [key: string]: any;
