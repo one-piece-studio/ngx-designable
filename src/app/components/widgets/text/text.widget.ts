@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { RegistryService } from '@/app/services/registry.service';
+import { GlobalRegistry } from '@/app/core/registry';
 import { IDesignerMiniLocales } from '@/app/core/types';
 
 @Component({
@@ -12,7 +12,7 @@ export class TextWidget implements OnChanges {
 
   currentText: string;
 
-  constructor(private registry: RegistryService) {}
+  constructor() {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.title && changes.title.currentValue) {
@@ -22,13 +22,13 @@ export class TextWidget implements OnChanges {
 
   fixLocaleText(text: string | IDesignerMiniLocales) {
     if (typeof text === 'string') {
-      this.currentText = this.registry.getDesignerMessage(text);
+      this.currentText = GlobalRegistry.getDesignerMessage(text);
     } else {
       const takeLocale = (message: string | IDesignerMiniLocales) => {
         if (typeof message == 'string') return message;
         if (typeof message == 'object') {
-          const lang = this.registry.getDesignerLanguage();
-          for (let key in message) {
+          const lang = GlobalRegistry.getDesignerLanguage();
+          for (const key in message) {
             if (key.toLocaleLowerCase() === lang) return message[key];
           }
           return '';

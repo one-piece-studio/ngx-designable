@@ -10,9 +10,9 @@ import {
 import { WorkspacePanelComponent } from '@/app/components/panels/workspace-panel.component';
 import { SettingPanelComponent } from '@/app/components/panels/setting-panel.component';
 import { ResourceWidget } from '@/app/components/widgets/resource/resource.widget';
-import { RegistryService } from '@/app/services/registry.service';
+import { GlobalRegistry } from '@/app/core/registry';
 import { createResource } from '@/app/core/externals';
-import { IResource, IResourceLike } from '@/app/core/types';
+import { IResourceLike } from '@/app/core/types';
 
 @Component({
   selector: 'app-home',
@@ -33,7 +33,7 @@ import { IResource, IResourceLike } from '@/app/core/types';
 })
 export class HomeComponent implements OnInit {
   resourceList: IResourceLike[] = [];
-  constructor(private registryService: RegistryService) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.registerLocales();
@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit {
   }
 
   registerLocales() {
-    this.registryService.registerDesignerLocales({
+    GlobalRegistry.registerDesignerLocales({
       'zh-CN': {
         sources: {
           Inputs: '输入控件',

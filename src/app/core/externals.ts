@@ -1,4 +1,4 @@
-import { IResource, IResourceCreator } from './types';
+import { IBehavior, IBehaviorHost, IResource, IResourceCreator } from './types';
 
 export const createDesigner = () => {};
 
@@ -18,3 +18,10 @@ export const createResource = (...sources: IResourceCreator[]): IResource[] => {
 export const isResourceList = (val: any): val is IResource[] => Array.isArray(val) && val.every(isResource);
 
 export const isResource = (val: any): val is IResource => val?.node;
+
+export const isBehavior = (val: any): val is IBehavior =>
+  val?.name || val?.selector || val?.extends || val?.designerProps || val?.designerLocales;
+
+export const isBehaviorHost = (val: any): val is IBehaviorHost => val?.Behavior && isBehaviorList(val.Behavior);
+
+export const isBehaviorList = (val: any): val is IBehavior[] => Array.isArray(val) && val.every(isBehavior);
