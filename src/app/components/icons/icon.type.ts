@@ -15,5 +15,9 @@ export enum IconType {
   Selection = 'Selection',
   Pc = 'Pc',
   Mobile = 'Mobile',
-  Responsive = 'Responsive'
+  Responsive = 'Responsive',
+  Design = 'Design',
+  Json = 'Json',
+  Code = 'Code',
+  Play = 'Play'
 }

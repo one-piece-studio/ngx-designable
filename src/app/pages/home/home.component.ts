@@ -17,6 +17,7 @@ import { ToolbarPanelComponent } from '@/app/components/panels/toolbar-panel.com
 import { DesignerToolWidget } from '@/app/components/widgets/designer-tool/designer-tool.widget';
 import { IconFactory, IconFactoryProvider } from '@/app/components/icons/icon.factory';
 import { IconRegister } from '@/app/components/icons/icon.register';
+import { ViewToolsWidget } from '@/app/components/widgets/view-tools/view-tools.widget';
 
 @Component({
   selector: 'app-home',
@@ -32,7 +33,8 @@ import { IconRegister } from '@/app/components/icons/icon.register';
     CompositePanelItemComponent,
     ResourceWidget,
     ToolbarPanelComponent,
-    DesignerToolWidget
+    DesignerToolWidget,
+    ViewToolsWidget
   ],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',

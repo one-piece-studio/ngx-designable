@@ -14,6 +14,10 @@ import { SelectionSvg } from '@/app/components/icons/selection';
 import { PcSvg } from '@/app/components/icons/pc';
 import { MobileSvg } from '@/app/components/icons/mobile';
 import { ResponsiveSvg } from '@/app/components/icons/responsive';
+import { DesignSvg } from '@/app/components/icons/design';
+import { JsonSvg } from '@/app/components/icons/json';
+import { CodeSvg } from '@/app/components/icons/code';
+import { PlaySvg } from '@/app/components/icons/play';
 
 export class IconRegister extends IconFactory {
   constructor() {
@@ -35,5 +39,9 @@ export class IconRegister extends IconFactory {
     this.register(IconType.Pc, PcSvg);
     this.register(IconType.Mobile, MobileSvg);
     this.register(IconType.Responsive, ResponsiveSvg);
+    this.register(IconType.Design, DesignSvg);
+    this.register(IconType.Json, JsonSvg);
+    this.register(IconType.Code, CodeSvg);
+    this.register(IconType.Play, PlaySvg);
   }
 }
