@@ -8,5 +8,12 @@ export enum IconType {
   CardSource = 'CardSource',
   PushPinOutlined = 'PushPinOutlined',
   PushPinFilled = 'PushPinFilled',
-  Close = 'Close'
+  Close = 'Close',
+  Undo = 'Undo',
+  Redo = 'Redo',
+  Move = 'Move',
+  Selection = 'Selection',
+  Pc = 'Pc',
+  Mobile = 'Mobile',
+  Responsive = 'Responsive'
 }

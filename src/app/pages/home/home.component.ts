@@ -13,6 +13,10 @@ import { ResourceWidget } from '@/app/components/widgets/resource/resource.widge
 import { GlobalRegistry } from '@/app/core/registry';
 import { createResource } from '@/app/core/externals';
 import { IResourceLike } from '@/app/core/types';
+import { ToolbarPanelComponent } from '@/app/components/panels/toolbar-panel.component';
+import { DesignerToolWidget } from '@/app/components/widgets/designer-tool/designer-tool.widget';
+import { IconFactory, IconFactoryProvider } from '@/app/components/icons/icon.factory';
+import { IconRegister } from '@/app/components/icons/icon.register';
 
 @Component({
   selector: 'app-home',
@@ -26,8 +30,11 @@ import { IResourceLike } from '@/app/core/types';
     WorkspacePanelComponent,
     SettingPanelComponent,
     CompositePanelItemComponent,
-    ResourceWidget
+    ResourceWidget,
+    ToolbarPanelComponent,
+    DesignerToolWidget
   ],
+  providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',
   styleUrl: './home.component.less'
 })

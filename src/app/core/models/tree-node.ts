@@ -221,9 +221,9 @@ export class TreeNode {
     }
   }
 
-  // getMessage(token: string) {
-  //   return GlobalRegistry.getDesignerMessage(token, this.designerLocales);
-  // }
+  getMessage(token: string) {
+    return GlobalRegistry.getDesignerMessage(token, this.designerLocales);
+  }
 
   isMyAncestor(node: TreeNode) {
     if (node === this || this.parent === node) return false;

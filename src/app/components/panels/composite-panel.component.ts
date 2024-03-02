@@ -97,7 +97,7 @@ export class CompositePanelItemComponent {
     `
   ],
   styleUrls: ['../styles/styles.less'],
-  providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
+  providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CompositePanelComponent implements AfterViewInit {

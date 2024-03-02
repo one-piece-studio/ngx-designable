@@ -1,1 +1,3 @@
-export class Engine {}
+export class Engine {
+  props: any;
+}

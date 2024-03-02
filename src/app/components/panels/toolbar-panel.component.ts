@@ -1,15 +1,43 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges, signal } from '@angular/core';
+import { WorkspacePanelItemComponent } from './workspace-panel.component';
 
 @Component({
   selector: 'app-toolbar-panel',
   standalone: true,
-  imports: [],
+  imports: [WorkspacePanelItemComponent],
   template: `
-    <div>
+    <app-workspace-panel-item [style]="currentStyle()">
       <ng-content></ng-content>
-    </div>
+    </app-workspace-panel-item>
   `,
   styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ToolbarPanelComponent {}
+export class ToolbarPanelComponent implements OnChanges {
+  @Input() style: { [p: string]: any };
+
+  @Input() flexible: boolean;
+
+  currentStyle = signal({
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '4px',
+    padding: '0 4px'
+  });
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.style && changes.style.currentValue) {
+      this.updateStyle();
+    }
+  }
+
+  updateStyle() {
+    this.currentStyle.set({
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: '4px',
+      padding: '0 4px',
+      ...this.style
+    });
+  }
+}

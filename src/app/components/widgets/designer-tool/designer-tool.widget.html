@@ -1,0 +1,46 @@
+<div class="{{prefix}}" [style]="style">
+  @if (use.includes('HISTORY')){
+    <nz-button-group nzSize="small" [style]="{marginRight: '20px'}">
+      <button nz-button nzSize="small">
+        <app-icon icon="Undo"></app-icon>
+      </button>
+      <button nz-button nzSize="small">
+        <app-icon icon="Redo"></app-icon>
+      </button>
+    </nz-button-group>
+  }
+
+  @if (use.includes('CURSOR')){
+    <nz-button-group nzSize="small" [style]="{marginRight: '20px'}">
+      <button nz-button nzSize="small">
+        <app-icon icon="Move"></app-icon>
+      </button>
+      <button nz-button nzSize="small">
+        <app-icon icon="Selection"></app-icon>
+      </button>
+    </nz-button-group>
+  }
+
+  @if (use.includes('SCREEN_TYPE') && screen.type == ScreenType.Responsive){
+
+  }
+
+  @if (use.includes('SCREEN_TYPE')){
+    <nz-button-group nzSize="small" [style]="{marginRight: '20px'}">
+      <button nz-button nzSize="small">
+        <app-icon icon="Pc"></app-icon>
+      </button>
+      <button nz-button nzSize="small">
+        <app-icon icon="Mobile"></app-icon>
+      </button>
+      <button nz-button nzSize="small">
+        <app-icon icon="Responsive"></app-icon>
+      </button>
+    </nz-button-group>
+  }
+
+  @if (use.includes('SCREEN_TYPE')  && screen.type == ScreenType.Mobile){
+
+  }
+
+</div>
