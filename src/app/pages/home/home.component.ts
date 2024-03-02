@@ -20,6 +20,7 @@ import { IconRegister } from '@/app/components/icons/icon.register';
 import { ViewToolsWidget } from '@/app/components/widgets/view-tools/view-tools.widget';
 import { ViewPanelComponent } from '@/app/components/panels/view-panel.component';
 import { ViewportPanelComponent } from '@/app/components/panels/viewport-panel.component';
+import { SettingsFormComponent } from '@/app/settings-form/settings-form.component';
 
 @Component({
   selector: 'app-home',
@@ -38,7 +39,8 @@ import { ViewportPanelComponent } from '@/app/components/panels/viewport-panel.c
     DesignerToolWidget,
     ViewToolsWidget,
     ViewPanelComponent,
-    ViewportPanelComponent
+    ViewportPanelComponent,
+    SettingsFormComponent
   ],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',

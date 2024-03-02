@@ -19,5 +19,6 @@ export enum IconType {
   Design = 'Design',
   Json = 'Json',
   Code = 'Code',
-  Play = 'Play'
+  Play = 'Play',
+  Setting = 'Setting'
 }

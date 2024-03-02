@@ -18,6 +18,7 @@ import { DesignSvg } from '@/app/components/icons/design';
 import { JsonSvg } from '@/app/components/icons/json';
 import { CodeSvg } from '@/app/components/icons/code';
 import { PlaySvg } from '@/app/components/icons/play';
+import { SettingSvg } from '@/app/components/icons/setting';
 
 export class IconRegister extends IconFactory {
   constructor() {
@@ -43,5 +44,6 @@ export class IconRegister extends IconFactory {
     this.register(IconType.Json, JsonSvg);
     this.register(IconType.Code, CodeSvg);
     this.register(IconType.Play, PlaySvg);
+    this.register(IconType.Setting, SettingSvg);
   }
 }

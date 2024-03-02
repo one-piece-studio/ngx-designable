@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { usePrefix } from '../../../utils';
-import { SharedModule } from '../../../shared/shared.module';
+import { usePrefix } from '@/app/utils';
+import { SharedModule } from '@/app/shared/shared.module';
 import { IconWidget } from '../icon/icon.widget';
 
 @Component({
