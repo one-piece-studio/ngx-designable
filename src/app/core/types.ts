@@ -128,3 +128,5 @@ export type IDesignerIconsStore = IDesignerStore<IDesignerIcons>;
 export type IDesignerLocaleStore = IDesignerStore<IDesignerLocales>;
 export type IDesignerBehaviorStore = IDesignerStore<IBehavior[]>;
 export type IDesignerLanguageStore = IDesignerStore<string>;
+
+export type WorkbenchTypes = 'DESIGNABLE' | 'PREVIEW' | 'JSONTREE' | 'MARKUP' | (string & {});

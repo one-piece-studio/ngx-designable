@@ -1,15 +1,20 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { WorkspacePanelItemComponent } from './workspace-panel.component';
 
 @Component({
   selector: 'app-viewport-panel',
   standalone: true,
-  imports: [],
+  imports: [WorkspacePanelItemComponent],
   template: `
-    <div>
+    <app-workspace-panel-item [style]="style" [flexible]="flexible">
       <ng-content></ng-content>
-    </div>
+    </app-workspace-panel-item>
   `,
   styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewportPanelComponent {}
+export class ViewportPanelComponent {
+  @Input() style: { [p: string]: any };
+
+  @Input() flexible: boolean = true;
+}

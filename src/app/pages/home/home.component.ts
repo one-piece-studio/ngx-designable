@@ -18,6 +18,8 @@ import { DesignerToolWidget } from '@/app/components/widgets/designer-tool/desig
 import { IconFactory, IconFactoryProvider } from '@/app/components/icons/icon.factory';
 import { IconRegister } from '@/app/components/icons/icon.register';
 import { ViewToolsWidget } from '@/app/components/widgets/view-tools/view-tools.widget';
+import { ViewPanelComponent } from '@/app/components/panels/view-panel.component';
+import { ViewportPanelComponent } from '@/app/components/panels/viewport-panel.component';
 
 @Component({
   selector: 'app-home',
@@ -34,7 +36,9 @@ import { ViewToolsWidget } from '@/app/components/widgets/view-tools/view-tools.
     ResourceWidget,
     ToolbarPanelComponent,
     DesignerToolWidget,
-    ViewToolsWidget
+    ViewToolsWidget,
+    ViewPanelComponent,
+    ViewportPanelComponent
   ],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',

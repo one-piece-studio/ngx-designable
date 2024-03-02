@@ -7,7 +7,6 @@ import { APP_PREFIX } from '@/app/constant/constant';
   standalone: true,
   imports: [SharedModule],
   template: `
-    <p>designer works!</p>
     <div [ngClass]="classNameList">
       <ng-content></ng-content>
     </div>
