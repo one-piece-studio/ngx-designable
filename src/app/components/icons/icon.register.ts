@@ -19,6 +19,14 @@ import { JsonSvg } from '@/app/components/icons/json';
 import { CodeSvg } from '@/app/components/icons/code';
 import { PlaySvg } from '@/app/components/icons/play';
 import { SettingSvg } from '@/app/components/icons/setting';
+import {
+  BatchDragAnimationSvg,
+  DragLeftSourceAnimationSvg,
+  DragRightSourceAnimationSvg
+} from '@/app/components/icons/animations';
+import { CommandSvg } from '@/app/components/icons/command';
+import { ShiftSvg } from '@/app/components/icons/shift';
+import { DeleteSvg } from '@/app/components/icons/delete';
 
 export class IconRegister extends IconFactory {
   constructor() {
@@ -45,5 +53,11 @@ export class IconRegister extends IconFactory {
     this.register(IconType.Code, CodeSvg);
     this.register(IconType.Play, PlaySvg);
     this.register(IconType.Setting, SettingSvg);
+    this.register(IconType.DragLeftSourceAnimation, DragLeftSourceAnimationSvg);
+    this.register(IconType.DragRightSourceAnimation, DragRightSourceAnimationSvg);
+    this.register(IconType.BatchDragAnimation, BatchDragAnimationSvg);
+    this.register(IconType.Command, CommandSvg);
+    this.register(IconType.Shift, ShiftSvg);
+    this.register(IconType.Delete, DeleteSvg);
   }
 }

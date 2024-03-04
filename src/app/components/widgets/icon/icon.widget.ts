@@ -18,15 +18,15 @@ import { NgOptimizedImage } from '@angular/common';
   standalone: true,
   imports: [ComponentSvg, NgOptimizedImage],
   template: `
-    <div class=" {{ classname }}">
-      <div class="{{ prefix }}" [style]="style">
+    <span class=" {{ classname }}">
+      <span class="{{ prefix }}" [style]="style">
         @if (isRegister) {
-          <div #container></div>
+          <span #container></span>
         } @else {
           <img ngSrc="{{ icon }}" [height]="size" [width]="size" alt="" />
         }
-      </div>
-    </div>
+      </span>
+    </span>
   `,
   styleUrls: ['./icon.widget.less', '../../styles/styles.less'],
   changeDetection: ChangeDetectionStrategy.OnPush

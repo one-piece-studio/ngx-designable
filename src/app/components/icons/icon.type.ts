@@ -20,5 +20,11 @@ export enum IconType {
   Json = 'Json',
   Code = 'Code',
   Play = 'Play',
-  Setting = 'Setting'
+  Setting = 'Setting',
+  DragLeftSourceAnimation = 'DragLeftSourceAnimation',
+  DragRightSourceAnimation = 'DragRightSourceAnimation',
+  BatchDragAnimation = 'BatchDragAnimation',
+  Command = 'Command',
+  Shift = 'Shift',
+  Delete = 'Delete'
 }

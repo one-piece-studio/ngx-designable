@@ -1,6 +1,5 @@
 import { IBehavior, IBehaviorHost, IResource, IResourceCreator } from './types';
-
-export const createDesigner = () => {};
+import { Engine } from '@/app/core/models';
 
 export const createResource = (...sources: IResourceCreator[]): IResource[] => {
   return sources.reduce((buf, source) => {
@@ -25,3 +24,7 @@ export const isBehavior = (val: any): val is IBehavior =>
 export const isBehaviorHost = (val: any): val is IBehaviorHost => val?.Behavior && isBehaviorList(val.Behavior);
 
 export const isBehaviorList = (val: any): val is IBehavior[] => Array.isArray(val) && val.every(isBehavior);
+
+export const createDesigner = () => {
+  return new Engine();
+};

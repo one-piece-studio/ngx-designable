@@ -10,11 +10,17 @@ import { WorkspacePanelItemComponent } from './workspace-panel.component';
       <ng-content></ng-content>
     </app-workspace-panel-item>
   `,
-  styles: [``],
+  styles: [
+    `
+      :host {
+        flex: 1;
+      }
+    `
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ViewportPanelComponent {
-  @Input() style: { [p: string]: any };
+  @Input() style: { [p: string]: any } = { height: '100%' };
 
   @Input() flexible: boolean = true;
 }
