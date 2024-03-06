@@ -1,9 +1,23 @@
 import { uid } from '@/app/shared/uid';
 import { IDesignerControllerProps, IDesignerLocales, IDesignerProps } from '@/app/core/types';
 import { GlobalRegistry } from '@/app/core/registry';
-import { action, define, observable } from '@formily/reactive';
+import { action, define, observable, toJS } from '@formily/reactive';
 import { isFn } from '@/app/shared/types';
 import { mergeLocales } from '@/app/core/internals';
+import {
+  AppendNodeEvent,
+  CloneNodeEvent,
+  FromNodeEvent,
+  InsertAfterEvent,
+  InsertBeforeEvent,
+  InsertChildrenEvent,
+  PrependNodeEvent,
+  RemoveNodeEvent,
+  UpdateChildrenEvent,
+  UpdateNodePropsEvent,
+  WrapNodeEvent
+} from '@/app/core/events';
+import _ from 'lodash';
 
 export interface ITreeNode {
   componentName?: string;
@@ -21,6 +35,59 @@ export interface INodeFinder {
 }
 
 const TreeNodes = new Map<string, TreeNode>();
+
+const CommonDesignerPropsMap = new Map<string, IDesignerControllerProps>();
+
+const removeNode = (node: TreeNode) => {
+  if (node.parent) {
+    node.parent.children = node.parent.children.filter(child => child !== node);
+  }
+};
+
+const resetNodesParent = (nodes: TreeNode[], parent: TreeNode) => {
+  const resetDepth = (node: TreeNode) => {
+    node.depth = node.parent ? node.parent.depth + 1 : 0;
+    node.children.forEach(resetDepth);
+  };
+
+  const shallowReset = (node: TreeNode) => {
+    node.parent = parent;
+    node.root = parent.root;
+    resetDepth(node);
+  };
+
+  const deepReset = (node: TreeNode) => {
+    shallowReset(node);
+    resetNodesParent(node.children, node);
+  };
+
+  return nodes.map(node => {
+    if (node === parent) return node;
+    if (!parent.isSourceNode) {
+      if (node.isSourceNode) {
+        node = node.clone(parent);
+        resetDepth(node);
+      } else if (!node.isRoot && node.isInOperation) {
+        node.operation?.selection.remove(node);
+        removeNode(node);
+        shallowReset(node);
+      } else {
+        deepReset(node);
+      }
+    } else {
+      deepReset(node);
+    }
+    if (!TreeNodes.has(node.id)) {
+      TreeNodes.set(node.id, node);
+      CommonDesignerPropsMap.set(node.componentName, node.designerProps);
+    }
+    return node;
+  });
+};
+
+const resetParent = (node: TreeNode, parent: TreeNode) => {
+  return resetNodesParent([node], parent)[0];
+};
 
 const resolveDesignerProps = (node: TreeNode, props: IDesignerControllerProps) => {
   if (isFn(props)) return props(node);
@@ -67,7 +134,9 @@ export class TreeNode {
       TreeNodes.set(this.id, this);
     }
     if (node) {
+      this.from(node);
     }
+    this.makeObservable();
   }
 
   makeObservable() {
@@ -77,16 +146,16 @@ export class TreeNode {
       hidden: observable.ref,
       children: observable.shallow,
       designerProps: observable.computed,
-      designerLocales: observable.computed
-      // wrap: action,
-      // prepend: action,
-      // append: action,
-      // insertAfter: action,
-      // insertBefore: action,
-      // remove: action,
-      // setProps: action,
-      // setChildren: action,
-      // setComponentName: action
+      designerLocales: observable.computed,
+      wrap: action,
+      prepend: action,
+      append: action,
+      insertAfter: action,
+      insertBefore: action,
+      remove: action,
+      setProps: action,
+      setChildren: action,
+      setComponentName: action
     });
   }
 
@@ -403,262 +472,262 @@ export class TreeNode {
     }
   }
 
-  // resetNodesParent(nodes: TreeNode[], parent: TreeNode) {
-  //   return resetNodesParent(
-  //     nodes.filter(node => node !== this),
-  //     parent
-  //   );
-  // }
+  resetNodesParent(nodes: TreeNode[], parent: TreeNode) {
+    return resetNodesParent(
+      nodes.filter(node => node !== this),
+      parent
+    );
+  }
 
-  // setProps(props?: any) {
-  //   return this.triggerMutation(
-  //     new UpdateNodePropsEvent({
-  //       target: this,
-  //       source: null
-  //     }),
-  //     () => {
-  //       Object.assign(this.props, props);
-  //     }
-  //   );
-  // }
+  setProps(props?: any) {
+    return this.triggerMutation(
+      new UpdateNodePropsEvent({
+        target: this,
+        source: null
+      }),
+      () => {
+        Object.assign(this.props, props);
+      }
+    );
+  }
 
   setComponentName(componentName: string) {
     this.componentName = componentName;
   }
 
-  // prepend(...nodes: TreeNode[]) {
-  //   if (nodes.some(node => node.contains(this))) return [];
-  //   const originSourceParents = nodes.map(node => node.parent);
-  //   const newNodes = this.resetNodesParent(nodes, this);
-  //   if (!newNodes.length) return [];
-  //   return this.triggerMutation(
-  //     new PrependNodeEvent({
-  //       originSourceParents,
-  //       target: this,
-  //       source: newNodes
-  //     }),
-  //     () => {
-  //       this.children = newNodes.concat(this.children);
-  //       return newNodes;
-  //     },
-  //     []
-  //   );
-  // }
+  prepend(...nodes: TreeNode[]) {
+    if (nodes.some(node => node.contains(this))) return [];
+    const originSourceParents = nodes.map(node => node.parent);
+    const newNodes = this.resetNodesParent(nodes, this);
+    if (!newNodes.length) return [];
+    return this.triggerMutation(
+      new PrependNodeEvent({
+        originSourceParents,
+        target: this,
+        source: newNodes
+      }),
+      () => {
+        this.children = newNodes.concat(this.children);
+        return newNodes;
+      },
+      []
+    );
+  }
 
-  // append(...nodes: TreeNode[]) {
-  //   if (nodes.some(node => node.contains(this))) return [];
-  //   const originSourceParents = nodes.map(node => node.parent);
-  //   const newNodes = this.resetNodesParent(nodes, this);
-  //   if (!newNodes.length) return [];
-  //   return this.triggerMutation(
-  //     new AppendNodeEvent({
-  //       originSourceParents,
-  //       target: this,
-  //       source: newNodes
-  //     }),
-  //     () => {
-  //       this.children = this.children.concat(newNodes);
-  //       return newNodes;
-  //     },
-  //     []
-  //   );
-  // }
+  append(...nodes: TreeNode[]) {
+    if (nodes.some(node => node.contains(this))) return [];
+    const originSourceParents = nodes.map(node => node.parent);
+    const newNodes = this.resetNodesParent(nodes, this);
+    if (!newNodes.length) return [];
+    return this.triggerMutation(
+      new AppendNodeEvent({
+        originSourceParents,
+        target: this,
+        source: newNodes
+      }),
+      () => {
+        this.children = this.children.concat(newNodes);
+        return newNodes;
+      },
+      []
+    );
+  }
 
-  // wrap(wrapper: TreeNode) {
-  //   if (wrapper === this) return;
-  //   const parent = this.parent;
-  //   return this.triggerMutation(
-  //     new WrapNodeEvent({
-  //       target: this,
-  //       source: wrapper
-  //     }),
-  //     () => {
-  //       resetParent(this, wrapper);
-  //       resetParent(wrapper, parent);
-  //       return wrapper;
-  //     }
-  //   );
-  // }
+  wrap(wrapper: TreeNode) {
+    if (wrapper === this) return null;
+    const parent = this.parent;
+    return this.triggerMutation(
+      new WrapNodeEvent({
+        target: this,
+        source: wrapper
+      }),
+      () => {
+        resetParent(this, wrapper);
+        resetParent(wrapper, parent);
+        return wrapper;
+      }
+    );
+  }
 
-  // insertAfter(...nodes: TreeNode[]) {
-  //   const parent = this.parent;
-  //   if (nodes.some(node => node.contains(this))) return [];
-  //   if (parent?.children?.length) {
-  //     const originSourceParents = nodes.map(node => node.parent);
-  //     const newNodes = this.resetNodesParent(nodes, parent);
-  //     if (!newNodes.length) return [];
-  //
-  //     return this.triggerMutation(
-  //       new InsertAfterEvent({
-  //         originSourceParents,
-  //         target: this,
-  //         source: newNodes
-  //       }),
-  //       () => {
-  //         parent.children = parent.children.reduce((buf, node) => {
-  //           if (node === this) {
-  //             return buf.concat([node]).concat(newNodes);
-  //           } else {
-  //             return buf.concat([node]);
-  //           }
-  //         }, []);
-  //         return newNodes;
-  //       },
-  //       []
-  //     );
-  //   }
-  //   return [];
-  // }
+  insertAfter(...nodes: TreeNode[]) {
+    const parent = this.parent;
+    if (nodes.some(node => node.contains(this))) return [];
+    if (parent?.children?.length) {
+      const originSourceParents = nodes.map(node => node.parent);
+      const newNodes = this.resetNodesParent(nodes, parent);
+      if (!newNodes.length) return [];
 
-  // insertBefore(...nodes: TreeNode[]) {
-  //   const parent = this.parent;
-  //   if (nodes.some(node => node.contains(this))) return [];
-  //   if (parent?.children?.length) {
-  //     const originSourceParents = nodes.map(node => node.parent);
-  //     const newNodes = this.resetNodesParent(nodes, parent);
-  //     if (!newNodes.length) return [];
-  //     return this.triggerMutation(
-  //       new InsertBeforeEvent({
-  //         originSourceParents,
-  //         target: this,
-  //         source: newNodes
-  //       }),
-  //       () => {
-  //         parent.children = parent.children.reduce((buf, node) => {
-  //           if (node === this) {
-  //             return buf.concat(newNodes).concat([node]);
-  //           } else {
-  //             return buf.concat([node]);
-  //           }
-  //         }, []);
-  //         return newNodes;
-  //       },
-  //       []
-  //     );
-  //   }
-  //   return [];
-  // }
+      return this.triggerMutation(
+        new InsertAfterEvent({
+          originSourceParents,
+          target: this,
+          source: newNodes
+        }),
+        () => {
+          parent.children = parent.children.reduce((buf, node) => {
+            if (node === this) {
+              return buf.concat([node]).concat(newNodes);
+            } else {
+              return buf.concat([node]);
+            }
+          }, []);
+          return newNodes;
+        },
+        []
+      );
+    }
+    return [];
+  }
 
-  // insertChildren(start: number, ...nodes: TreeNode[]) {
-  //   if (nodes.some(node => node.contains(this))) return [];
-  //   if (this.children?.length) {
-  //     const originSourceParents = nodes.map(node => node.parent);
-  //     const newNodes = this.resetNodesParent(nodes, this);
-  //     if (!newNodes.length) return [];
-  //     return this.triggerMutation(
-  //       new InsertChildrenEvent({
-  //         originSourceParents,
-  //         target: this,
-  //         source: newNodes
-  //       }),
-  //       () => {
-  //         this.children = this.children.reduce((buf, node, index) => {
-  //           if (index === start) {
-  //             return buf.concat(newNodes).concat([node]);
-  //           }
-  //           return buf.concat([node]);
-  //         }, []);
-  //         return newNodes;
-  //       },
-  //       []
-  //     );
-  //   }
-  //   return [];
-  // }
+  insertBefore(...nodes: TreeNode[]) {
+    const parent = this.parent;
+    if (nodes.some(node => node.contains(this))) return [];
+    if (parent?.children?.length) {
+      const originSourceParents = nodes.map(node => node.parent);
+      const newNodes = this.resetNodesParent(nodes, parent);
+      if (!newNodes.length) return [];
+      return this.triggerMutation(
+        new InsertBeforeEvent({
+          originSourceParents,
+          target: this,
+          source: newNodes
+        }),
+        () => {
+          parent.children = parent.children.reduce((buf, node) => {
+            if (node === this) {
+              return buf.concat(newNodes).concat([node]);
+            } else {
+              return buf.concat([node]);
+            }
+          }, []);
+          return newNodes;
+        },
+        []
+      );
+    }
+    return [];
+  }
 
-  // setChildren(...nodes: TreeNode[]) {
-  //   const originSourceParents = nodes.map(node => node.parent);
-  //   const newNodes = this.resetNodesParent(nodes, this);
-  //   return this.triggerMutation(
-  //     new UpdateChildrenEvent({
-  //       originSourceParents,
-  //       target: this,
-  //       source: newNodes
-  //     }),
-  //     () => {
-  //       this.children = newNodes;
-  //       return newNodes;
-  //     },
-  //     []
-  //   );
-  // }
+  insertChildren(start: number, ...nodes: TreeNode[]) {
+    if (nodes.some(node => node.contains(this))) return [];
+    if (this.children?.length) {
+      const originSourceParents = nodes.map(node => node.parent);
+      const newNodes = this.resetNodesParent(nodes, this);
+      if (!newNodes.length) return [];
+      return this.triggerMutation(
+        new InsertChildrenEvent({
+          originSourceParents,
+          target: this,
+          source: newNodes
+        }),
+        () => {
+          this.children = this.children.reduce((buf, node, index) => {
+            if (index === start) {
+              return buf.concat(newNodes).concat([node]);
+            }
+            return buf.concat([node]);
+          }, []);
+          return newNodes;
+        },
+        []
+      );
+    }
+    return [];
+  }
+
+  setChildren(...nodes: TreeNode[]) {
+    const originSourceParents = nodes.map(node => node.parent);
+    const newNodes = this.resetNodesParent(nodes, this);
+    return this.triggerMutation(
+      new UpdateChildrenEvent({
+        originSourceParents,
+        target: this,
+        source: newNodes
+      }),
+      () => {
+        this.children = newNodes;
+        return newNodes;
+      },
+      []
+    );
+  }
 
   /**
    * @deprecated
    * please use `setChildren`
    */
-  // setNodeChildren(...nodes: TreeNode[]) {
-  //   return this.setChildren(...nodes);
-  // }
+  setNodeChildren(...nodes: TreeNode[]) {
+    return this.setChildren(...nodes);
+  }
 
-  // remove() {
-  //   return this.triggerMutation(
-  //     new RemoveNodeEvent({
-  //       target: this,
-  //       source: null
-  //     }),
-  //     () => {
-  //       removeNode(this);
-  //       TreeNodes.delete(this.id);
-  //     }
-  //   );
-  // }
-  //
-  // clone(parent?: TreeNode) {
-  //   const newNode = new TreeNode(
-  //     {
-  //       id: uid(),
-  //       componentName: this.componentName,
-  //       sourceName: this.sourceName,
-  //       props: toJS(this.props),
-  //       children: []
-  //     },
-  //     parent ? parent : this.parent
-  //   );
-  //   newNode.children = resetNodesParent(
-  //     this.children.map(child => {
-  //       return child.clone(newNode);
-  //     }),
-  //     newNode
-  //   );
-  //   return this.triggerMutation(
-  //     new CloneNodeEvent({
-  //       target: this,
-  //       source: newNode
-  //     }),
-  //     () => newNode
-  //   );
-  // }
-  //
-  // from(node?: ITreeNode) {
-  //   if (!node) return;
-  //   return this.triggerMutation(
-  //     new FromNodeEvent({
-  //       target: this,
-  //       source: node
-  //     }),
-  //     () => {
-  //       if (node.id && node.id !== this.id) {
-  //         TreeNodes.delete(this.id);
-  //         TreeNodes.set(node.id, this);
-  //         this.id = node.id;
-  //       }
-  //       if (node.componentName) {
-  //         this.componentName = node.componentName;
-  //       }
-  //       this.props = node.props ?? {};
-  //       if (node.hidden) {
-  //         this.hidden = node.hidden;
-  //       }
-  //       if (node.children) {
-  //         this.children =
-  //           node.children?.map?.(node => {
-  //             return new TreeNode(node, this);
-  //           }) || [];
-  //       }
-  //     }
-  //   );
-  // }
+  remove() {
+    return this.triggerMutation(
+      new RemoveNodeEvent({
+        target: this,
+        source: null
+      }),
+      () => {
+        removeNode(this);
+        TreeNodes.delete(this.id);
+      }
+    );
+  }
+
+  clone(parent?: TreeNode) {
+    const newNode = new TreeNode(
+      {
+        id: uid(),
+        componentName: this.componentName,
+        sourceName: this.sourceName,
+        props: toJS(this.props),
+        children: []
+      },
+      parent ? parent : this.parent
+    );
+    newNode.children = resetNodesParent(
+      this.children.map(child => {
+        return child.clone(newNode);
+      }),
+      newNode
+    );
+    return this.triggerMutation(
+      new CloneNodeEvent({
+        target: this,
+        source: newNode
+      }),
+      () => newNode
+    );
+  }
+
+  from(node?: ITreeNode) {
+    if (!node) return;
+    return this.triggerMutation(
+      new FromNodeEvent({
+        target: this,
+        source: node
+      }),
+      () => {
+        if (node.id && node.id !== this.id) {
+          TreeNodes.delete(this.id);
+          TreeNodes.set(node.id, this);
+          this.id = node.id;
+        }
+        if (node.componentName) {
+          this.componentName = node.componentName;
+        }
+        this.props = node.props ?? {};
+        if (node.hidden) {
+          this.hidden = node.hidden;
+        }
+        if (node.children) {
+          this.children =
+            node.children?.map?.(node => {
+              return new TreeNode(node, this);
+            }) || [];
+        }
+      }
+    );
+  }
 
   serialize(): ITreeNode {
     return {
@@ -681,18 +750,18 @@ export class TreeNode {
     return TreeNodes.get(id);
   }
 
-  // static remove(nodes: TreeNode[] = []) {
-  //   for (let i = nodes.length - 1; i >= 0; i--) {
-  //     const node = nodes[i];
-  //     if (node.allowDelete()) {
-  //       const previous = node.previous;
-  //       const next = node.next;
-  //       node.remove();
-  //       node.operation?.selection.select(previous ? previous : next ? next : node.parent);
-  //       node.operation?.hover.clear();
-  //     }
-  //   }
-  // }
+  static remove(nodes: TreeNode[] = []) {
+    for (let i = nodes.length - 1; i >= 0; i--) {
+      const node = nodes[i];
+      if (node.allowDelete()) {
+        const previous = node.previous;
+        const next = node.next;
+        node.remove();
+        node.operation?.selection.select(previous ? previous : next ? next : node.parent);
+        node.operation?.hover.clear();
+      }
+    }
+  }
 
   static sort(nodes: TreeNode[] = []) {
     return nodes.sort((before, after) => {
@@ -701,56 +770,56 @@ export class TreeNode {
     });
   }
 
-  // static clone(nodes: TreeNode[] = []) {
-  //   const groups: { [parentId: string]: TreeNode[] } = {};
-  //   const lastGroupNode: { [parentId: string]: TreeNode } = {};
-  //   const filterNestedNode = TreeNode.sort(nodes).filter(node => {
-  //     return !nodes.some(parent => {
-  //       return node.isMyParents(parent);
-  //     });
-  //   });
-  //   _.each(filterNestedNode, node => {
-  //     if (node === node.root) return;
-  //     if (!node.allowClone()) return;
-  //     if (!node?.operation) return;
-  //     groups[node?.parent?.id] = groups[node?.parent?.id] || [];
-  //     groups[node?.parent?.id].push(node);
-  //     if (lastGroupNode[node?.parent?.id]) {
-  //       if (node.index > lastGroupNode[node?.parent?.id].index) {
-  //         lastGroupNode[node?.parent?.id] = node;
-  //       }
-  //     } else {
-  //       lastGroupNode[node?.parent?.id] = node;
-  //     }
-  //   });
-  //   const parents = new Map<TreeNode, TreeNode[]>();
-  //   _.each(groups, (nodes, parentId) => {
-  //     const lastNode = lastGroupNode[parentId];
-  //     let insertPoint = lastNode;
-  //     _.each(nodes, node => {
-  //       const cloned = node.clone();
-  //       if (!cloned) return;
-  //       if (node.operation?.selection.has(node) && insertPoint.parent.allowAppend([cloned])) {
-  //         insertPoint.insertAfter(cloned);
-  //         insertPoint = insertPoint.next;
-  //       } else if (node.operation.selection.length === 1) {
-  //         const targetNode = node.operation?.tree.findById(node.operation.selection.first);
-  //         let cloneNodes = parents.get(targetNode);
-  //         if (!cloneNodes) {
-  //           cloneNodes = [];
-  //           parents.set(targetNode, cloneNodes);
-  //         }
-  //         if (targetNode && targetNode.allowAppend([cloned])) {
-  //           cloneNodes.push(cloned);
-  //         }
-  //       }
-  //     });
-  //   });
-  //   parents.forEach((nodes, target) => {
-  //     if (!nodes.length) return;
-  //     target.append(...nodes);
-  //   });
-  // }
+  static clone(nodes: TreeNode[] = []) {
+    const groups: { [parentId: string]: TreeNode[] } = {};
+    const lastGroupNode: { [parentId: string]: TreeNode } = {};
+    const filterNestedNode = TreeNode.sort(nodes).filter(node => {
+      return !nodes.some(parent => {
+        return node.isMyParents(parent);
+      });
+    });
+    _.each(filterNestedNode, node => {
+      if (node === node.root) return;
+      if (!node.allowClone()) return;
+      if (!node?.operation) return;
+      groups[node?.parent?.id] = groups[node?.parent?.id] || [];
+      groups[node?.parent?.id].push(node);
+      if (lastGroupNode[node?.parent?.id]) {
+        if (node.index > lastGroupNode[node?.parent?.id].index) {
+          lastGroupNode[node?.parent?.id] = node;
+        }
+      } else {
+        lastGroupNode[node?.parent?.id] = node;
+      }
+    });
+    const parents = new Map<TreeNode, TreeNode[]>();
+    _.each(groups, (nodes, parentId) => {
+      const lastNode = lastGroupNode[parentId];
+      let insertPoint = lastNode;
+      _.each(nodes, node => {
+        const cloned = node.clone();
+        if (!cloned) return;
+        if (node.operation?.selection.has(node) && insertPoint.parent.allowAppend([cloned])) {
+          insertPoint.insertAfter(cloned);
+          insertPoint = insertPoint.next;
+        } else if (node.operation.selection.length === 1) {
+          const targetNode = node.operation?.tree.findById(node.operation.selection.first);
+          let cloneNodes = parents.get(targetNode);
+          if (!cloneNodes) {
+            cloneNodes = [];
+            parents.set(targetNode, cloneNodes);
+          }
+          if (targetNode && targetNode.allowAppend([cloned])) {
+            cloneNodes.push(cloned);
+          }
+        }
+      });
+    });
+    parents.forEach((nodes, target) => {
+      if (!nodes.length) return;
+      target.append(...nodes);
+    });
+  }
 
   static filterResizable(nodes: TreeNode[] = []) {
     return nodes.filter(node => node.allowResize());
@@ -784,16 +853,16 @@ export class TreeNode {
     }, []);
   }
 
-  // static filterDroppable(nodes: TreeNode[] = [], parent: TreeNode) {
-  //   return nodes.reduce((buf, node) => {
-  //     if (!node.allowDrop(parent)) return buf;
-  //     if (isFn(node.designerProps?.getDropNodes)) {
-  //       const cloned = node.isSourceNode ? node.clone(node.parent) : node;
-  //       const transformed = node.designerProps.getDropNodes(cloned, parent);
-  //       return transformed ? buf.concat(transformed) : buf;
-  //     }
-  //     if (node.componentName === '$$ResourceNode$$') return buf.concat(node.children);
-  //     return buf.concat([node]);
-  //   }, []);
-  // }
+  static filterDroppable(nodes: TreeNode[] = [], parent: TreeNode) {
+    return nodes.reduce((buf, node) => {
+      if (!node.allowDrop(parent)) return buf;
+      if (isFn(node.designerProps?.getDropNodes)) {
+        const cloned = node.isSourceNode ? node.clone(node.parent) : node;
+        const transformed = node.designerProps.getDropNodes(cloned, parent);
+        return transformed ? buf.concat(transformed) : buf;
+      }
+      if (node.componentName === '$$ResourceNode$$') return buf.concat(node.children);
+      return buf.concat([node]);
+    }, []);
+  }
 }
