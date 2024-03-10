@@ -34,4 +34,8 @@ export class Workbench {
       // setWorkbenchType: action
     });
   }
+
+  eachWorkspace<T>(callbackFn: (value: Workspace, index: number) => T) {
+    this.workspaces.forEach(callbackFn);
+  }
 }

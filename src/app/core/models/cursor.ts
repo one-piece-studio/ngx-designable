@@ -113,4 +113,54 @@ export class Cursor {
   constructor(engine: Engine) {
     this.engine = engine;
   }
+
+  get speed() {
+    return Math.sqrt(Math.pow(this.dragAtomDelta.clientX, 2) + Math.pow(this.dragAtomDelta.clientY, 2));
+  }
+
+  setStatus(status: CursorStatus) {
+    this.status = status;
+  }
+
+  setType(type: CursorType | string) {
+    this.type = type;
+  }
+
+  setDragType(type: CursorDragType | string) {
+    this.dragType = type;
+  }
+
+  setStyle(style: string) {
+    this.engine.workbench.eachWorkspace(workspace => {
+      setCursorStyle(workspace.viewport.contentWindow, style);
+    });
+  }
+
+  setPosition(position?: ICursorPosition) {
+    this.dragAtomDelta = calcPositionDelta(this.position, position);
+    this.position = { ...position };
+    if (this.status === CursorStatus.Dragging) {
+      this.dragStartToCurrentDelta = calcPositionDelta(this.position, this.dragStartPosition);
+    }
+  }
+
+  setDragStartPosition(position?: ICursorPosition) {
+    if (position) {
+      this.dragStartPosition = { ...position };
+    } else {
+      this.dragStartPosition = null;
+      this.dragStartToCurrentDelta = DEFAULT_POSITION;
+    }
+  }
+
+  setDragEndPosition(position?: ICursorPosition) {
+    if (!this.dragStartPosition) return;
+    if (position) {
+      this.dragEndPosition = { ...position };
+      this.dragStartToEndDelta = calcPositionDelta(this.dragStartPosition, this.dragEndPosition);
+    } else {
+      this.dragEndPosition = null;
+      this.dragStartToEndDelta = DEFAULT_POSITION;
+    }
+  }
 }
