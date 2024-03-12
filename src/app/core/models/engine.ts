@@ -6,6 +6,9 @@ import { uid } from '@/app/shared/uid';
 import { TreeNode } from '@/app/core/models/tree-node';
 import { Event } from '@/app/shared/event';
 
+/**
+ * 设计器引擎
+ */
 export class Engine extends Event {
   id: string;
 
@@ -34,6 +37,10 @@ export class Engine extends Event {
     this.screen = new Screen(this);
     this.cursor = new Cursor(this);
     // this.keyboard = new Keyboard(this)
+  }
+
+  findNodeById(id: string) {
+    return TreeNode.findById(id);
   }
 
   findMovingNodes(): TreeNode[] {

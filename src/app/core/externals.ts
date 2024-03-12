@@ -26,5 +26,5 @@ export const isBehaviorHost = (val: any): val is IBehaviorHost => val?.Behavior 
 export const isBehaviorList = (val: any): val is IBehavior[] => Array.isArray(val) && val.every(isBehavior);
 
 export const createDesigner = () => {
-  return new Engine();
+  // return new Engine();
 };
