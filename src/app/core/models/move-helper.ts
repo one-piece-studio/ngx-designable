@@ -2,6 +2,8 @@ import { Operation } from './operation';
 import { TreeNode } from './tree-node';
 import { Viewport } from './viewport';
 import { IPoint, Rect } from '../../shared/coordinate';
+import { CursorDragType } from '@/app/core/models/cursor';
+import { DragNodeEvent } from '@/app/core/events';
 
 export enum ClosestPosition {
   Before = 'BEFORE',
@@ -63,4 +65,54 @@ export class MoveHelper {
   outlineClosestDirection: ClosestPosition = null;
 
   dragging = false;
+
+  constructor(props: IMoveHelperProps) {
+    this.operation = props.operation;
+    this.rootNode = this.operation.tree;
+  }
+
+  get cursor() {
+    return this.operation.engine.cursor;
+  }
+
+  get viewport() {
+    return this.operation.workspace.viewport;
+  }
+
+  get outline() {
+    return this.operation.workspace.outline;
+  }
+
+  get hasDragNodes() {
+    return this.dragNodes.length > 0;
+  }
+
+  get closestDirection() {
+    if (this.activeViewport === this.outline) {
+      return this.outlineClosestDirection;
+    }
+    return this.viewportClosestDirection;
+  }
+
+  dragStart(props: IMoveHelperDragStartProps) {
+    const nodes = TreeNode.filterDraggable(props?.dragNodes);
+    if (nodes.length) {
+      this.dragNodes = nodes;
+      this.trigger(
+        new DragNodeEvent({
+          target: this.operation.tree,
+          source: this.dragNodes
+        })
+      );
+      this.viewport.cacheElements();
+      this.cursor.setDragType(CursorDragType.Move);
+      this.dragging = true;
+    }
+  }
+
+  trigger(event: any) {
+    if (this.operation) {
+      return this.operation.dispatch(event);
+    }
+  }
 }

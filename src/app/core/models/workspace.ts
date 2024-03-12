@@ -2,6 +2,8 @@ import { Engine } from '@/app/core/models/engine';
 import { Viewport } from '@/app/core/models/viewport';
 import { Operation } from '@/app/core/models/operation';
 import { History } from '@/app/core/models/history';
+import { ICustomEvent } from '@/app/shared/event';
+import { IEngineContext } from '@/app/core/types';
 
 export interface IWorkspace {
   id?: string;
@@ -39,4 +41,17 @@ export class Workspace {
   history: History;
 
   props: IWorkspaceProps;
+
+  getEventContext(): IEngineContext {
+    return {
+      workbench: this.engine.workbench,
+      workspace: this,
+      engine: this.engine,
+      viewport: this.viewport
+    };
+  }
+
+  dispatch(event: ICustomEvent) {
+    return this.engine.dispatch(event, this.getEventContext());
+  }
 }

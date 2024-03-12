@@ -5,6 +5,8 @@ import { Selection } from './selection';
 import { Hover } from './hover';
 import { TransformHelper } from './transform-helper';
 import { MoveHelper } from './move-helper';
+import { ICustomEvent } from '@/app/shared/event';
+import { isFn } from '@/app/shared/types';
 
 export interface IOperation {
   tree?: ITreeNode;
@@ -29,4 +31,9 @@ export class Operation {
   requests = {
     snapshot: null
   };
+
+  dispatch(event: ICustomEvent, callback?: () => void) {
+    if (this.workspace.dispatch(event) === false) return;
+    if (isFn(callback)) return callback();
+  }
 }
