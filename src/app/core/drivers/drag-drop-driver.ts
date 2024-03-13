@@ -16,12 +16,12 @@ export class DragDropDriver extends EventDriver<Engine> {
 
   onMouseDown = (e: MouseEvent) => {
     if (e.button !== 0 || e.ctrlKey || e.metaKey) {
-      return;
+      return false;
     }
     if (e.target['isContentEditable'] || e.target['contentEditable'] === 'true') {
       return true;
     }
-    if (e.target?.['closest']?.('.monaco-editor')) return;
+    if (e.target?.['closest']?.('.monaco-editor')) return false;
     GlobalState.startEvent = e;
     GlobalState.dragging = false;
     GlobalState.onMouseDownAt = Date.now();
@@ -29,7 +29,7 @@ export class DragDropDriver extends EventDriver<Engine> {
     this.batchAddEventListener('dragend', this.onMouseUp);
     this.batchAddEventListener('dragstart', this.onStartDrag);
     this.batchAddEventListener('mousemove', this.onDistanceChange);
-    return;
+    return false;
   };
 
   onMouseUp = (e: MouseEvent) => {
