@@ -10,3 +10,4 @@ export * from './UpdateChildrenEvent';
 export * from './RemoveNodeEvent';
 export * from './CloneNodeEvent';
 export * from './FromNodeEvent';
+export * from './DropNodeEvent';

@@ -1,9 +1,16 @@
 import { Operation } from './operation';
 import { TreeNode } from './tree-node';
 import { Viewport } from './viewport';
-import { IPoint, Rect } from '../../shared/coordinate';
+import {
+  calcDistanceOfPointToRect,
+  calcDistancePointToEdge,
+  IPoint,
+  isNearAfter,
+  isPointInRect,
+  Rect
+} from '../../shared/coordinate';
 import { CursorDragType } from '@/app/core/models/cursor';
-import { DragNodeEvent } from '@/app/core/events';
+import { DragNodeEvent, DropNodeEvent } from '@/app/core/events';
 
 export enum ClosestPosition {
   Before = 'BEFORE',
@@ -94,6 +101,153 @@ export class MoveHelper {
     return this.viewportClosestDirection;
   }
 
+  getClosestLayout(viewport: Viewport) {
+    return viewport.getValidNodeLayout(this.closestNode);
+  }
+
+  calcClosestPosition(point: IPoint, viewport: Viewport): ClosestPosition {
+    const closestNode = this.closestNode;
+    if (!closestNode || !viewport.isPointInViewport(point)) return ClosestPosition.Forbid;
+    const closestRect = viewport.getValidNodeRect(closestNode);
+    const isInline = this.getClosestLayout(viewport) === 'horizontal';
+    if (!closestRect) {
+      return null;
+    }
+    const isAfter = isNearAfter(point, closestRect, viewport.moveInsertionType === 'block' ? false : isInline);
+    const getValidParent = (node: TreeNode) => {
+      if (!node) return;
+      if (node.parent?.allowSibling(this.dragNodes)) return node.parent;
+      return getValidParent(node.parent);
+    };
+    if (isPointInRect(point, closestRect, viewport.moveSensitive)) {
+      if (!closestNode.allowAppend(this.dragNodes)) {
+        if (!closestNode.allowSibling(this.dragNodes)) {
+          const parentClosestNode = getValidParent(closestNode);
+          if (parentClosestNode) {
+            this.closestNode = parentClosestNode;
+          }
+          if (isInline) {
+            if (parentClosestNode) {
+              if (isAfter) {
+                return ClosestPosition.After;
+              }
+              return ClosestPosition.Before;
+            }
+            if (isAfter) {
+              return ClosestPosition.ForbidAfter;
+            }
+            return ClosestPosition.ForbidBefore;
+          } else {
+            if (parentClosestNode) {
+              if (isAfter) {
+                return ClosestPosition.Under;
+              }
+              return ClosestPosition.Upper;
+            }
+            if (isAfter) {
+              return ClosestPosition.ForbidUnder;
+            }
+            return ClosestPosition.ForbidUpper;
+          }
+        } else {
+          if (isInline) {
+            return isAfter ? ClosestPosition.After : ClosestPosition.Before;
+          } else {
+            return isAfter ? ClosestPosition.Under : ClosestPosition.Upper;
+          }
+        }
+      }
+      if (closestNode.contains(...this.dragNodes)) {
+        if (isAfter) {
+          return ClosestPosition.InnerAfter;
+        }
+        return ClosestPosition.InnerBefore;
+      } else {
+        return ClosestPosition.Inner;
+      }
+    } else if (closestNode === closestNode.root) {
+      return isAfter ? ClosestPosition.InnerAfter : ClosestPosition.InnerBefore;
+    } else {
+      if (!closestNode.allowSibling(this.dragNodes)) {
+        const parentClosestNode = getValidParent(closestNode);
+        if (parentClosestNode) {
+          this.closestNode = parentClosestNode;
+        }
+        if (isInline) {
+          if (parentClosestNode) {
+            if (isAfter) {
+              return ClosestPosition.After;
+            }
+            return ClosestPosition.Before;
+          }
+          return isAfter ? ClosestPosition.ForbidAfter : ClosestPosition.ForbidBefore;
+        } else {
+          if (parentClosestNode) {
+            if (isAfter) {
+              return ClosestPosition.Under;
+            }
+            return ClosestPosition.Upper;
+          }
+          return isAfter ? ClosestPosition.ForbidUnder : ClosestPosition.ForbidUpper;
+        }
+      }
+      if (isInline) {
+        return isAfter ? ClosestPosition.After : ClosestPosition.Before;
+      } else {
+        return isAfter ? ClosestPosition.Under : ClosestPosition.Upper;
+      }
+    }
+  }
+
+  calcClosestNode(point: IPoint, viewport: Viewport): TreeNode {
+    if (this.touchNode) {
+      const touchNodeRect = viewport.getValidNodeRect(this.touchNode);
+      if (!touchNodeRect) return null;
+      if (this.touchNode?.children?.length) {
+        const touchDistance = calcDistancePointToEdge(point, touchNodeRect);
+        let minDistance = touchDistance;
+        let minDistanceNode = this.touchNode;
+        this.touchNode.eachChildren(node => {
+          const rect = viewport.getElementRectById(node.id);
+          if (!rect) return;
+          const distance = isPointInRect(point, rect, viewport.moveSensitive)
+            ? 0
+            : calcDistanceOfPointToRect(point, rect);
+          if (distance <= minDistance) {
+            minDistance = distance;
+            minDistanceNode = node;
+          }
+        });
+        return minDistanceNode;
+      } else {
+        return this.touchNode;
+      }
+    }
+    return this.operation.tree;
+  }
+
+  calcClosestRect(viewport: Viewport, closestDirection: ClosestPosition): Rect {
+    const closestNode = this.closestNode;
+    if (!closestNode || !closestDirection) return null;
+    const closestRect = viewport.getValidNodeRect(closestNode);
+    if (closestDirection === ClosestPosition.InnerAfter || closestDirection === ClosestPosition.InnerBefore) {
+      return viewport.getChildrenRect(closestNode);
+    } else {
+      return closestRect;
+    }
+  }
+
+  calcClosestOffsetRect(viewport: Viewport, closestDirection: ClosestPosition): Rect {
+    const closestNode = this.closestNode;
+    if (!closestNode || !closestDirection) return null;
+    const closestRect = viewport.getValidNodeOffsetRect(closestNode);
+    if (closestDirection === ClosestPosition.InnerAfter || closestDirection === ClosestPosition.InnerBefore) {
+      return viewport.getChildrenOffsetRect(closestNode);
+    } else {
+      return closestRect;
+    }
+  }
+
   dragStart(props: IMoveHelperDragStartProps) {
     const nodes = TreeNode.filterDraggable(props?.dragNodes);
     if (nodes.length) {
@@ -108,6 +262,61 @@ export class MoveHelper {
       this.cursor.setDragType(CursorDragType.Move);
       this.dragging = true;
     }
+  }
+
+  dragMove(props: IMoveHelperDragMoveProps) {
+    const { point, touchNode } = props;
+    if (!this.dragging) return;
+    if (this.outline.isPointInViewport(point, false)) {
+      this.activeViewport = this.outline;
+      this.touchNode = touchNode;
+      this.closestNode = this.calcClosestNode(point, this.outline);
+    } else if (this.viewport.isPointInViewport(point, false)) {
+      this.activeViewport = this.viewport;
+      this.touchNode = touchNode;
+      this.closestNode = this.calcClosestNode(point, this.viewport);
+    }
+    if (!this.activeViewport) return;
+
+    if (this.activeViewport === this.outline) {
+      this.outlineClosestDirection = this.calcClosestPosition(point, this.outline);
+      this.viewportClosestDirection = this.outlineClosestDirection;
+    } else {
+      this.viewportClosestDirection = this.calcClosestPosition(point, this.viewport);
+      this.outlineClosestDirection = this.viewportClosestDirection;
+    }
+    if (this.outline.mounted) {
+      this.outlineClosestRect = this.calcClosestRect(this.outline, this.outlineClosestDirection);
+      this.outlineClosestOffsetRect = this.calcClosestOffsetRect(this.outline, this.outlineClosestDirection);
+    }
+    if (this.viewport.mounted) {
+      this.viewportClosestRect = this.calcClosestRect(this.viewport, this.viewportClosestDirection);
+      this.viewportClosestOffsetRect = this.calcClosestOffsetRect(this.viewport, this.viewportClosestDirection);
+    }
+  }
+
+  dragDrop(props: IMoveHelperDragDropProps) {
+    this.trigger(
+      new DropNodeEvent({
+        target: this.operation.tree,
+        source: props?.dropNode
+      })
+    );
+  }
+
+  dragEnd() {
+    this.dragging = false;
+    this.dragNodes = [];
+    this.touchNode = null;
+    this.closestNode = null;
+    this.activeViewport = null;
+    this.outlineClosestDirection = null;
+    this.outlineClosestOffsetRect = null;
+    this.outlineClosestRect = null;
+    this.viewportClosestDirection = null;
+    this.viewportClosestOffsetRect = null;
+    this.viewportClosestRect = null;
+    this.viewport.clearCache();
   }
 
   trigger(event: any) {
