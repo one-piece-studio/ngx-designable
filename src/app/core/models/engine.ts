@@ -5,6 +5,7 @@ import { Screen, ScreenType } from '@/app/core/models/screen';
 import { uid } from '@/app/shared/uid';
 import { TreeNode } from '@/app/core/models/tree-node';
 import { Event } from '@/app/shared/event';
+import { globalThisPolyfill } from '@/app/shared/globalThisPolyfill';
 
 /**
  * 设计器引擎
@@ -62,6 +63,14 @@ export class Engine extends Event {
       });
     });
     return results;
+  }
+
+  mount() {
+    this.attachEvents(globalThisPolyfill);
+  }
+
+  unmount() {
+    this.detachEvents();
   }
 
   static defaultProps: IEngineProps<Engine> = {

@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { uid } from '@/app/shared/uid';
+import { Engine } from '@/app/core/models';
 
 @Component({
   selector: 'app-workspace',
@@ -12,4 +14,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styles: [``],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class WorkspaceComponent {}
+export class WorkspaceComponent implements OnInit {
+  constructor(private designer: Engine) {}
+  ngOnInit(): void {
+    const workspace = {
+      id: uid()
+    };
+    this.designer.workbench.ensureWorkspace(workspace);
+  }
+}

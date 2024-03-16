@@ -24,4 +24,6 @@ export class History<T extends ISerializable = any> {
   updateTimer = null;
   maxSize = 100;
   locking = false;
+
+  push(type?: string) {}
 }

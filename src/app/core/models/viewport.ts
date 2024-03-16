@@ -4,6 +4,9 @@ import { globalThisPolyfill } from '@/app/shared/globalThisPolyfill';
 import { calcBoundingRect, IPoint, isPointInRect, Rect } from '@/app/shared/coordinate';
 import { TreeNode } from '@/app/core/models/tree-node';
 import { calcElementLayout } from '@/app/shared/element';
+import { action, define, observable } from '@formily/reactive';
+import { isHTMLElement } from '@/app/shared/types';
+import { cancelIdle, requestIdle } from '@/app/shared/request-idle';
 
 export interface IViewportProps {
   engine: Engine;
@@ -54,6 +57,64 @@ export class Viewport {
   moveInsertionType: IViewportMoveInsertionType;
 
   nodeElementsStore: Record<string, HTMLElement[]> = {};
+
+  constructor(props: IViewportProps) {
+    this.workspace = props.workspace;
+    this.engine = props.engine;
+    this.moveSensitive = props.moveSensitive ?? false;
+    this.moveInsertionType = props.moveInsertionType ?? 'all';
+    this.viewportElement = props.viewportElement;
+    this.contentWindow = props.contentWindow;
+    this.nodeIdAttrName = props.nodeIdAttrName;
+    this.digestViewport();
+    this.makeObservable();
+    this.attachEvents();
+  }
+
+  attachEvents() {
+    const engine = this.engine;
+    cancelIdle(this.attachRequest);
+    this.attachRequest = requestIdle(() => {
+      if (!engine) return;
+      if (this.isIframe) {
+        this.workspace.attachEvents(this.contentWindow, this.contentWindow);
+      } else if (isHTMLElement(this.viewportElement)) {
+        this.workspace.attachEvents(this.viewportElement, this.contentWindow);
+      }
+    });
+  }
+
+  makeObservable() {
+    define(this, {
+      scrollX: observable.ref,
+      scrollY: observable.ref,
+      width: observable.ref,
+      height: observable.ref,
+      digestViewport: action,
+      viewportElement: observable.ref,
+      contentWindow: observable.ref
+    });
+  }
+
+  digestViewport() {
+    Object.assign(this, this.getCurrentData());
+  }
+
+  getCurrentData() {
+    const data: IViewportData = {};
+    if (this.isIframe) {
+      data.scrollX = this.contentWindow?.scrollX || 0;
+      data.scrollY = this.contentWindow?.scrollY || 0;
+      data.width = this.contentWindow?.innerWidth || 0;
+      data.height = this.contentWindow?.innerHeight || 0;
+    } else if (this.viewportElement) {
+      data.scrollX = this.viewportElement?.scrollLeft || 0;
+      data.scrollY = this.viewportElement?.scrollTop || 0;
+      data.width = this.viewportElement?.clientWidth || 0;
+      data.height = this.viewportElement?.clientHeight || 0;
+    }
+    return data;
+  }
 
   cacheElements() {
     this.nodeElementsStore = {};

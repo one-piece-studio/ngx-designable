@@ -1,17 +1,30 @@
-import { IBehavior, IBehaviorHost, IResource, IResourceCreator } from './types';
-import { Engine } from '@/app/core/models';
+import { IBehavior, IBehaviorCreator, IBehaviorHost, IResource, IResourceCreator } from './types';
+import { Engine, TreeNode } from '@/app/core/models';
 import { DEFAULT_DRIVERS, DEFAULT_EFFECTS } from '@/app/core/presets';
+import { isArr } from '@/app/shared/types';
 
 export const createResource = (...sources: IResourceCreator[]): IResource[] => {
   return sources.reduce((buf, source) => {
     return buf.concat({
       ...source,
-      node: {
+      node: new TreeNode({
         componentName: '$$ResourceNode$$',
         isSourceNode: true,
         children: source.elements || []
-      }
+      })
     });
+  }, []);
+};
+
+export const createBehavior = (...behaviors: Array<IBehaviorCreator | IBehaviorCreator[]>): IBehavior[] => {
+  return behaviors.reduce((buf: any[], behavior) => {
+    if (isArr(behavior)) return buf.concat(createBehavior(...behavior));
+    const { selector } = behavior || {};
+    if (!selector) return buf;
+    if (typeof selector === 'string') {
+      behavior.selector = node => node.componentName === selector;
+    }
+    return buf.concat(behavior);
   }, []);
 };
 

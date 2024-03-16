@@ -112,6 +112,14 @@ export interface IBehavior {
   designerLocales?: IDesignerLocales;
 }
 
+export interface IBehaviorCreator {
+  name: string;
+  extends?: string[];
+  selector: string | ((node: TreeNode) => boolean);
+  designerProps?: IDesignerControllerProps;
+  designerLocales?: IDesignerLocales;
+}
+
 export interface IBehaviorHost {
   Behavior?: IBehavior[];
 }

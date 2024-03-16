@@ -1,6 +1,7 @@
 import { Engine } from './engine';
 import { isValidNumber } from '../../shared/types';
 import { globalThisPolyfill } from '../../shared/globalThisPolyfill';
+import { action, define, observable } from '@formily/reactive';
 
 export enum CursorStatus {
   Normal = 'NORMAL',
@@ -112,6 +113,26 @@ export class Cursor {
 
   constructor(engine: Engine) {
     this.engine = engine;
+    this.makeObservable();
+  }
+
+  makeObservable() {
+    define(this, {
+      type: observable.ref,
+      dragType: observable.ref,
+      status: observable.ref,
+      position: observable.ref,
+      dragStartPosition: observable.ref,
+      dragEndPosition: observable.ref,
+      dragAtomDelta: observable.ref,
+      dragStartToCurrentDelta: observable.ref,
+      dragStartToEndDelta: observable.ref,
+      view: observable.ref,
+      setStyle: action,
+      setPosition: action,
+      setStatus: action,
+      setType: action
+    });
   }
 
   get speed() {

@@ -1,6 +1,6 @@
-import { useDragDropEffect } from './effects/useDragDropEffect';
-import { DragDropDriver } from '@/app/core/drivers/drag-drop-driver';
+import { useDragDropEffect, useCursorEffect } from '@/app/core/effects';
+import { DragDropDriver, MouseMoveDriver } from '@/app/core/drivers';
 
-export const DEFAULT_EFFECTS = [useDragDropEffect];
+export const DEFAULT_EFFECTS = [useDragDropEffect, useCursorEffect];
 
-export const DEFAULT_DRIVERS = [DragDropDriver];
+export const DEFAULT_DRIVERS = [DragDropDriver, MouseMoveDriver];

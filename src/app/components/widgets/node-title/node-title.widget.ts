@@ -1,20 +1,22 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { TreeNode } from '../../../core/models';
+import { TreeNode } from '@/app/core/models';
 
 @Component({
   selector: 'app-node-title-widget',
   standalone: true,
-  template: ` {{ node.getMessage('title') || node.componentName }} `,
+  template: ` {{ currentTitle }} `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodeTitleWidget implements OnChanges {
   @Input() node: TreeNode;
 
-  currentNode: TreeNode;
+  currentTitle: string;
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.node && changes.node.currentValue) {
-      this.currentNode = this.takeNode(this.node);
+      const node = this.takeNode(this.node);
+      const message = node.getMessage('title');
+      this.currentTitle = message ? message : node.componentName;
     }
   }
 
