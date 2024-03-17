@@ -172,6 +172,28 @@ export class Viewport {
     this.nodeElementsStore = {};
   }
 
+  detachEvents() {
+    if (this.isIframe) {
+      this.workspace.detachEvents(this.contentWindow);
+      this.workspace.detachEvents(this.viewportElement);
+    } else if (this.viewportElement) {
+      this.workspace.detachEvents(this.viewportElement);
+    }
+  }
+
+  onMount(element: HTMLElement, contentWindow: Window) {
+    this.mounted = true;
+    this.viewportElement = element;
+    this.contentWindow = contentWindow;
+    this.attachEvents();
+    this.digestViewport();
+  }
+
+  onUnmount() {
+    this.mounted = false;
+    this.detachEvents();
+  }
+
   isPointInViewport(point: IPoint, sensitive?: boolean) {
     if (!this.rect) return false;
     if (!this.containsElement(document.elementFromPoint(point.x, point.y))) {

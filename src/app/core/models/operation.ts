@@ -41,10 +41,16 @@ export class Operation {
       ...this.engine.props.defaultComponentTree,
       operation: this
     });
-
+    this.hover = new Hover({
+      operation: this
+    });
+    this.selection = new Selection({
+      operation: this
+    });
     this.moveHelper = new MoveHelper({
       operation: this
     });
+    this.selection.select(this.tree);
   }
 
   snapshot(type?: string) {

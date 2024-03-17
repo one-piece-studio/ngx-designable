@@ -12,8 +12,6 @@ import { usePrefix } from '@/app/utils';
 import { IconWidget } from '@/app/components/widgets/icon/icon.widget';
 import { SharedModule } from '@/app/shared/shared.module';
 import { IconType } from '@/app/components/icons/icon.type';
-import { IconFactory, IconFactoryProvider } from '@/app/components/icons/icon.factory';
-import { IconRegister } from '@/app/components/icons/icon.register';
 import { TextWidget } from '@/app/components/widgets/text/text.widget';
 import { NgIf } from '@angular/common';
 

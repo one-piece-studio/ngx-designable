@@ -95,7 +95,10 @@ export class MoveHelper {
   }
 
   get closestDirection() {
+    console.log('activeViewport>>>', this.activeViewport);
+    console.log('outline>>>', this.outline);
     if (this.activeViewport === this.outline) {
+      console.log('test1111');
       return this.outlineClosestDirection;
     }
     return this.viewportClosestDirection;

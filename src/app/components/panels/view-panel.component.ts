@@ -9,13 +9,13 @@ import { ViewportComponent } from '@/app/components/container/viewport.component
   standalone: true,
   imports: [WorkspacePanelItemComponent, ViewportComponent],
   template: `
-    @if (workbench.type == 'DESIGNABLE') {
+    @if (workbench.type === 'DESIGNABLE') {
       <app-viewport>
         <ng-content></ng-content>
       </app-viewport>
     } @else {
       <div [style]="defaultStyle()">
-        <ng-content></ng-content>
+        <!--        <ng-content></ng-content>-->
       </div>
     }
   `,

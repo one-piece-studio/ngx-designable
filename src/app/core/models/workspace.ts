@@ -74,6 +74,10 @@ export class Workspace {
     this.engine.attachEvents(container, contentWindow, this.getEventContext());
   }
 
+  detachEvents(container: EventContainer) {
+    this.engine.detachEvents(container);
+  }
+
   getEventContext(): IEngineContext {
     return {
       workbench: this.engine.workbench,

@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { WorkspacePanelItemComponent } from './workspace-panel.component';
+import { SimulatorComponent } from '@/app/components/container/simulator.component';
 
 @Component({
   selector: 'app-viewport-panel',
   standalone: true,
-  imports: [WorkspacePanelItemComponent],
+  imports: [WorkspacePanelItemComponent, SimulatorComponent],
   template: `
     <app-workspace-panel-item [style]="style" [flexible]="flexible">
-      <ng-content></ng-content>
+      <app-simulator>
+        <ng-content></ng-content>
+      </app-simulator>
     </app-workspace-panel-item>
   `,
   styles: [

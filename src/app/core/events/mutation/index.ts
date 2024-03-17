@@ -11,3 +11,5 @@ export * from './RemoveNodeEvent';
 export * from './CloneNodeEvent';
 export * from './FromNodeEvent';
 export * from './DropNodeEvent';
+export * from './HoverNodeEvent';
+export * from './UnSelectNodeEvent';

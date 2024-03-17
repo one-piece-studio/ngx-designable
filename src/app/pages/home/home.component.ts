@@ -21,6 +21,7 @@ import { ViewToolsWidget } from '@/app/components/widgets/view-tools/view-tools.
 import { ViewPanelComponent } from '@/app/components/panels/view-panel.component';
 import { ViewportPanelComponent } from '@/app/components/panels/viewport-panel.component';
 import { SettingsFormComponent } from '@/app/settings-form/settings-form.component';
+import { ComponentTreeWidget } from '@/app/components/widgets/component-tree/component-tree.widget';
 
 @Component({
   selector: 'app-home',
@@ -40,7 +41,8 @@ import { SettingsFormComponent } from '@/app/settings-form/settings-form.compone
     ViewToolsWidget,
     ViewPanelComponent,
     ViewportPanelComponent,
-    SettingsFormComponent
+    SettingsFormComponent,
+    ComponentTreeWidget
   ],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',

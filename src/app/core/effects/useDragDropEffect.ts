@@ -136,6 +136,7 @@ export const useDragDropEffect = (engine: Engine) => {
         }
       }
       moveHelper.dragEnd();
+      console.log('Tree>>>', moveHelper.operation.tree);
     });
     engine.cursor.setStyle('');
   });
