@@ -5,6 +5,7 @@ import {
   Component,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
   ViewChild,
   ViewContainerRef
@@ -12,6 +13,7 @@ import {
 import { TreeNode } from '@/app/core/models';
 import { NgTemplateOutlet } from '@angular/common';
 import { WidgetFactory } from '@/app/pages/home/register';
+import { fromEvent, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-tree-node-widget',
@@ -38,22 +40,32 @@ import { WidgetFactory } from '@/app/pages/home/register';
   imports: [NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TreeNodeWidget implements OnChanges, AfterViewInit {
+export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
   @Input() node: TreeNode;
 
   @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
 
   component: string;
 
+  destroy$ = new Subject<void>();
+
   constructor(
     private factory: WidgetFactory,
     private cdr: ChangeDetectorRef
   ) {}
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   ngAfterViewInit(): void {
-    setInterval(() => {
-      this.cdr.markForCheck();
-    }, 1000);
+    fromEvent(window, 'mouseup')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(ev => {
+        console.log('tree-node-widget>>>', ev);
+        this.cdr.markForCheck();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
