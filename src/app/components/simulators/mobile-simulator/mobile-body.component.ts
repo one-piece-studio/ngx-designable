@@ -29,7 +29,7 @@ import { NgOptimizedImage, NgStyle } from '@angular/common';
             width: screen.flip ? 946.667 : 460,
             height: screen.flip ? 460 : 946.667,
             boxShadow: '0 0 20px #0000004d',
-            borderRadius: 60,
+            borderRadius: '60px',
             backfaceVisibility: 'hidden'
           }"
         />
@@ -70,19 +70,19 @@ export class MobileBodyComponent {
     if (this.screen.flip) {
       return {
         position: 'absolute',
-        width: 736,
-        height: 414,
-        top: 43.3333,
-        left: 106.667,
+        width: '736px',
+        height: '414px',
+        top: '43.3333px',
+        left: '106.667px',
         overflow: 'hidden'
       };
     }
     return {
       position: 'absolute',
-      width: 414,
-      height: 736,
-      top: 126.667,
-      left: 23.3333,
+      width: '414px',
+      height: '736px',
+      top: '126.667px',
+      left: '23.3333px',
       overflow: 'hidden'
     };
   };

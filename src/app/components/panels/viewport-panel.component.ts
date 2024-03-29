@@ -9,7 +9,9 @@ import { SimulatorComponent } from '@/app/components/container/simulator.compone
   template: `
     <app-workspace-panel-item [style]="style" [flexible]="flexible">
       <app-simulator>
-        <ng-content></ng-content>
+        <ng-template>
+          <ng-content></ng-content>
+        </ng-template>
       </app-simulator>
     </app-workspace-panel-item>
   `,
