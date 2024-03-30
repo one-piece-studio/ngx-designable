@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild
+} from '@angular/core';
 import { usePrefix } from '@/app/utils';
 import { NodeTitleWidget } from '../node-title/node-title.widget';
 import { Engine, TreeNode } from '@/app/core/models';
 import { Cursor, CursorStatus } from '@/app/core/models/cursor';
 import { autorun } from '@formily/reactive';
+import { fromEvent, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-ghost',
@@ -22,8 +31,10 @@ import { autorun } from '@formily/reactive';
   styleUrls: ['./ghost.widget.less'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class GhostWidget implements OnInit {
+export class GhostWidget implements AfterViewInit, OnDestroy {
   @ViewChild('containerRef') containerRef: ElementRef;
+
+  destroy$ = new Subject<void>();
 
   prefix = usePrefix('ghost');
 
@@ -42,24 +53,29 @@ export class GhostWidget implements OnInit {
     this.cursor = this.designer.cursor;
   }
 
-  ngOnInit(): void {
-    window.addEventListener('mousedown', () => {
-      setTimeout(() => {
-        this.movingNodes = this.designer.findMovingNodes();
-        console.log(this.movingNodes);
-        this.firstNode = this.movingNodes[0];
-        console.log(this.firstNode);
-      }, 200);
-    });
+  ngAfterViewInit(): void {
+    fromEvent(window, 'mousedown')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        setTimeout(() => {
+          this.movingNodes = this.designer.findMovingNodes();
+          this.firstNode = this.movingNodes[0];
+        }, 100);
+      });
+
     autorun(() => {
-      // console.log('cursor status>>>', this.cursor.status);
       this.cdr.markForCheck();
       const transform = `perspective(1px) translate3d(${
         this.cursor.position?.topClientX - 18
       }px,${this.cursor.position?.topClientY - 12}px,0) scale(0.8)`;
       if (!this.containerRef) return;
-      // console.log('autorun', this.containerRef);
+
       this.containerRef.nativeElement.style.transform = transform;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
