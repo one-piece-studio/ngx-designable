@@ -18,7 +18,7 @@ import { fromEvent, Subject, takeUntil } from 'rxjs';
   selector: 'app-ghost',
   standalone: true,
   template: `
-    @if (cursor.status === CursorStatus.Dragging) {
+    @if (firstNode && cursor.status === CursorStatus.Dragging) {
       <div class="{{ prefix }}" #containerRef>
         <span style="white-space: nowrap">
           <app-node-title-widget [node]="firstNode"></app-node-title-widget>
@@ -54,22 +54,20 @@ export class GhostWidget implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    fromEvent(window, 'mousedown')
+    fromEvent(window, 'mousemove')
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        setTimeout(() => {
-          this.movingNodes = this.designer.findMovingNodes();
-          this.firstNode = this.movingNodes[0];
-        }, 100);
+        this.movingNodes = this.designer.findMovingNodes();
+        this.firstNode = this.movingNodes[0];
       });
 
     autorun(() => {
-      this.cdr.markForCheck();
+      this.cdr.detectChanges();
       const transform = `perspective(1px) translate3d(${
         this.cursor.position?.topClientX - 18
       }px,${this.cursor.position?.topClientY - 12}px,0) scale(0.8)`;
       if (!this.containerRef) return;
-
+      if (!this.firstNode) return;
       this.containerRef.nativeElement.style.transform = transform;
     });
   }
