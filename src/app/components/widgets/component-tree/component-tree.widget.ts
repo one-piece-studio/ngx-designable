@@ -1,4 +1,14 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  Renderer2,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { usePrefix } from '@/app/utils';
 import { TreeNodeWidget } from '../tree-node/tree-node.widget';
 import { IDesignerComponents } from '../../types';
@@ -9,7 +19,7 @@ import { Engine, TreeNode } from '@/app/core/models';
   selector: 'app-component-tree-widget',
   standalone: true,
   template: `
-    <div class="{{ prefix }}" [style]="style">
+    <div class="{{ prefix }}" [style]="style" #container>
       <app-tree-node-widget [node]="tree"></app-tree-node-widget>
     </div>
   `,
@@ -18,6 +28,8 @@ import { Engine, TreeNode } from '@/app/core/models';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComponentTreeWidget implements OnChanges, AfterViewInit {
+  @ViewChild('container') container: ElementRef;
+
   prefix = usePrefix('component-tree');
 
   @Input() components: IDesignerComponents;
@@ -28,7 +40,10 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
 
   displayName = 'ComponentTreeWidget';
 
-  constructor(private designer: Engine) {}
+  constructor(
+    private designer: Engine,
+    private renderer2: Renderer2
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.components && changes.components.currentValue) {
@@ -38,6 +53,7 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.tree = this.useTree();
+    this.renderer2.setAttribute(this.container.nativeElement, `${this.designer?.props?.nodeIdAttrName}`, this.tree.id);
   }
 
   registerDesignerBehaviors() {
