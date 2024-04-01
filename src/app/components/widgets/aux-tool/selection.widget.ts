@@ -1,35 +1,25 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  OnChanges,
-  Renderer2,
-  SimpleChanges,
-  ViewChild
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { usePrefix } from '@/app/utils';
 import { Engine, TreeNode } from '@/app/core/models';
 import { Selection } from '@/app/core/models/selection';
 import { Cursor } from '@/app/core/models/cursor';
 import { MoveHelper } from '@/app/core/models/move-helper';
 import { Rect } from '@/app/shared/coordinate';
+import { AttributeDirective } from '@/app/directive';
 
 @Component({
   selector: 'app-selection-box-widget',
   template: `
-    <div class="{{ prefix }}" #container style="{{ createSelectionStyle() }}">
+    <div class="{{ prefix }}" [attributes]="attributes" style="{{ createSelectionStyle() }}">
       <div class="{{ innerPrefix }}"></div>
     </div>
   `,
   standalone: true,
   styleUrls: [`./styles.less`],
+  imports: [AttributeDirective],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class SelectionBoxWidget implements OnChanges {
-  @ViewChild('container') container: ElementRef;
-
   @Input() node: TreeNode;
 
   @Input() showHelpers: boolean;
@@ -39,6 +29,8 @@ export class SelectionBoxWidget implements OnChanges {
   innerPrefix = usePrefix('aux-selection-box-inner');
 
   nodeRect: Rect;
+
+  attributes: { [p: string]: any };
 
   createSelectionStyle = () => {
     const baseStyle = {
@@ -58,7 +50,6 @@ export class SelectionBoxWidget implements OnChanges {
 
   constructor(
     private designer: Engine,
-    private renderer2: Renderer2,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -66,12 +57,10 @@ export class SelectionBoxWidget implements OnChanges {
     if (changes.node && changes.node.currentValue) {
       setTimeout(() => {
         this.nodeRect = this.designer.workbench.currentWorkspace.viewport.getValidNodeOffsetRect(this.node);
+        this.attributes = {
+          [this.designer.props?.nodeSelectionIdAttrName]: this.node.id
+        };
 
-        this.renderer2.setAttribute(
-          this.container.nativeElement,
-          `${this.designer.props?.nodeSelectionIdAttrName}`,
-          this.node.id
-        );
         this.cdr.markForCheck();
       });
     }

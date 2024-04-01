@@ -1,35 +1,32 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  ElementRef,
   Input,
   OnChanges,
-  Renderer2,
-  SimpleChanges,
-  ViewChild
+  SimpleChanges
 } from '@angular/core';
 import { usePrefix } from '@/app/utils';
 import { TreeNodeWidget } from '../tree-node/tree-node.widget';
 import { IDesignerComponents } from '../../types';
 import { GlobalRegistry } from '@/app/core/registry';
 import { Engine, TreeNode } from '@/app/core/models';
+import { AttributeDirective } from '@/app/directive';
 
 @Component({
   selector: 'app-component-tree-widget',
   standalone: true,
   template: `
-    <div class="{{ prefix }}" [style]="style" #container>
+    <div class="{{ prefix }}" [style]="style" [attributes]="attributes">
       <app-tree-node-widget [node]="tree"></app-tree-node-widget>
     </div>
   `,
   styleUrls: ['./component-tree.widget.less'],
-  imports: [TreeNodeWidget],
+  imports: [TreeNodeWidget, AttributeDirective],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComponentTreeWidget implements OnChanges, AfterViewInit {
-  @ViewChild('container') container: ElementRef;
-
   prefix = usePrefix('component-tree');
 
   @Input() components: IDesignerComponents;
@@ -40,9 +37,11 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
 
   displayName = 'ComponentTreeWidget';
 
+  attributes: { [p: string]: any };
+
   constructor(
     private designer: Engine,
-    private renderer2: Renderer2
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -53,7 +52,10 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.tree = this.useTree();
-    this.renderer2.setAttribute(this.container.nativeElement, `${this.designer?.props?.nodeIdAttrName}`, this.tree.id);
+    this.attributes = {
+      [this.designer?.props?.nodeIdAttrName]: this.tree.id
+    };
+    this.cdr.markForCheck();
   }
 
   registerDesignerBehaviors() {
