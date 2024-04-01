@@ -4,19 +4,22 @@ import { Engine, TreeNode } from '@/app/core/models';
 import { Selection } from '@/app/core/models/selection';
 import { Cursor } from '@/app/core/models/cursor';
 import { MoveHelper } from '@/app/core/models/move-helper';
-import { Rect } from '@/app/shared/coordinate';
 import { AttributeDirective } from '@/app/directive';
+import { HelpersWidget } from '@/app/components/widgets/aux-tool/helpers.widget';
 
 @Component({
   selector: 'app-selection-box-widget',
   template: `
     <div class="{{ prefix }}" [attributes]="attributes" style="{{ createSelectionStyle() }}">
       <div class="{{ innerPrefix }}"></div>
+      @if (showHelpers) {
+        <app-helpers-widget [node]="node" [nodeRect]="nodeRect"></app-helpers-widget>
+      }
     </div>
   `,
   standalone: true,
   styleUrls: [`./styles.less`],
-  imports: [AttributeDirective],
+  imports: [AttributeDirective, HelpersWidget],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class SelectionBoxWidget implements OnChanges {
@@ -28,7 +31,7 @@ export class SelectionBoxWidget implements OnChanges {
 
   innerPrefix = usePrefix('aux-selection-box-inner');
 
-  nodeRect: Rect;
+  nodeRect: DOMRect;
 
   attributes: { [p: string]: any };
 
@@ -56,7 +59,7 @@ export class SelectionBoxWidget implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.node && changes.node.currentValue) {
       setTimeout(() => {
-        this.nodeRect = this.designer.workbench.currentWorkspace.viewport.getValidNodeOffsetRect(this.node);
+        this.nodeRect = this.designer.workbench.currentWorkspace.viewport.getValidNodeOffsetRect(this.node) as any;
         this.attributes = {
           [this.designer.props?.nodeSelectionIdAttrName]: this.node.id
         };

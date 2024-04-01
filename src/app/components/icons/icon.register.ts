@@ -27,6 +27,7 @@ import {
 import { CommandSvg } from '@/app/components/icons/command';
 import { ShiftSvg } from '@/app/components/icons/shift';
 import { DeleteSvg } from '@/app/components/icons/delete';
+import { PageSvg } from '@/app/components/icons/page';
 
 export class IconRegister extends IconFactory {
   constructor() {
@@ -59,5 +60,6 @@ export class IconRegister extends IconFactory {
     this.register(IconType.Command, CommandSvg);
     this.register(IconType.Shift, ShiftSvg);
     this.register(IconType.Delete, DeleteSvg);
+    this.register(IconType.Page, PageSvg);
   }
 }

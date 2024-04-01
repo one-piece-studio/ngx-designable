@@ -26,5 +26,6 @@ export enum IconType {
   BatchDragAnimation = 'BatchDragAnimation',
   Command = 'Command',
   Shift = 'Shift',
-  Delete = 'Delete'
+  Delete = 'Delete',
+  Page = 'Page'
 }

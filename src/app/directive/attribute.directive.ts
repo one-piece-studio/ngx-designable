@@ -15,7 +15,6 @@ export class AttributeDirective implements OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.attributes) {
-      console.log('attributes>>>', this.attributes);
       for (const attributeName in this.attributes) {
         const attributeValue = this.attributes[attributeName];
         if (attributeValue) {

@@ -18,14 +18,12 @@ import { NgOptimizedImage } from '@angular/common';
   standalone: true,
   imports: [ComponentSvg, NgOptimizedImage],
   template: `
-    <span class=" {{ classname }}">
-      <span class="{{ prefix }}" [style]="style">
-        @if (isRegister) {
-          <span #container></span>
-        } @else {
-          <img ngSrc="{{ icon }}" [height]="size" [width]="size" alt="" />
-        }
-      </span>
+    <span class="{{ prefix }} {{ classname }}" [style]="style">
+      @if (isRegister) {
+        <ng-container #container></ng-container>
+      } @else {
+        <img ngSrc="{{ icon }}" [height]="size" [width]="size" alt="" />
+      }
     </span>
   `,
   styleUrls: ['./icon.widget.less', '../../styles/styles.less'],
