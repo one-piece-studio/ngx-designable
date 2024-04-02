@@ -63,9 +63,8 @@ export class SelectionBoxWidget implements OnChanges {
         this.attributes = {
           [this.designer.props?.nodeSelectionIdAttrName]: this.node.id
         };
-
         this.cdr.markForCheck();
-      });
+      }, 100);
     }
   }
 }
