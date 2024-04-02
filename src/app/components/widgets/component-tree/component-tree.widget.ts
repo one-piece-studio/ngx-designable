@@ -55,7 +55,7 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
     this.attributes = {
       [this.designer?.props?.nodeIdAttrName]: this.tree.id
     };
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   registerDesignerBehaviors() {
