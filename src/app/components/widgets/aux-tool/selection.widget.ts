@@ -50,7 +50,6 @@ export class SelectionBoxWidget implements OnChanges {
     }
     return baseStyle;
   };
-
   constructor(
     private designer: Engine,
     private cdr: ChangeDetectorRef
@@ -58,14 +57,16 @@ export class SelectionBoxWidget implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.node && changes.node.currentValue) {
-      setTimeout(() => {
-        this.nodeRect = this.designer.workbench.currentWorkspace.viewport.getValidNodeOffsetRect(this.node) as any;
-        this.attributes = {
-          [this.designer.props?.nodeSelectionIdAttrName]: this.node.id
-        };
-        this.cdr.markForCheck();
-      }, 100);
+      setTimeout(() => this.update());
     }
+  }
+
+  update() {
+    this.nodeRect = this.designer.workbench.currentWorkspace.viewport.getValidNodeOffsetRect(this.node) as any;
+    this.attributes = {
+      [this.designer.props?.nodeSelectionIdAttrName]: this.node.id
+    };
+    this.cdr.markForCheck();
   }
 }
 

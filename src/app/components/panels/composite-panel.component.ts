@@ -117,7 +117,7 @@ export class CompositePanelComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.changeActiveTab(0);
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   changeActiveTab(key: number) {
