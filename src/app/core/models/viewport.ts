@@ -71,6 +71,34 @@ export class Viewport {
     this.attachEvents();
   }
 
+  get isScrollLeft() {
+    return this.scrollX === 0;
+  }
+
+  get isScrollTop() {
+    return this.scrollY === 0;
+  }
+
+  get isScrollRight() {
+    if (this.isIframe) {
+      return this.width + this.contentWindow.scrollX >= this.contentWindow?.document?.body?.scrollWidth;
+    } else if (this.viewportElement) {
+      return this.viewportElement.offsetWidth + this.scrollX >= this.viewportElement.scrollWidth;
+    }
+    return false;
+  }
+
+  get isScrollBottom() {
+    if (this.isIframe) {
+      if (!this.contentWindow?.document?.body) return false;
+      return this.height + this.contentWindow.scrollY >= this.contentWindow.document.body.scrollHeight;
+    } else if (this.viewportElement) {
+      if (!this.viewportElement) return false;
+      return this.viewportElement.offsetHeight + this.viewportElement.scrollTop >= this.viewportElement.scrollHeight;
+    }
+    return false;
+  }
+
   attachEvents() {
     const engine = this.engine;
     cancelIdle(this.attachRequest);
