@@ -3,9 +3,9 @@ import { SharedModule } from '../../shared/shared.module';
 import { usePrefix } from '../../utils';
 import { AuxToolWidget } from '@/app/components/widgets/aux-tool/aux-tool.widget';
 import { EmptyWidget } from '@/app/components/widgets/empty/empty.widget';
-import { Engine } from '@/app/core/models';
 import { globalThisPolyfill } from '@/app/shared/globalThisPolyfill';
 import { Viewport } from '@/app/core/models/viewport';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-viewport',
@@ -28,10 +28,10 @@ export class ViewportComponent implements AfterViewInit, OnDestroy {
 
   viewport: Viewport;
 
-  constructor(private designer: Engine) {}
+  constructor(private hookService: HookService) {}
 
   ngAfterViewInit(): void {
-    this.viewport = this.designer.workbench.currentWorkspace.viewport;
+    this.viewport = this.hookService.useViewport();
     this.viewport.onMount(this.container.nativeElement, globalThisPolyfill);
   }
 

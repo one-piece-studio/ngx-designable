@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChil
 import { usePrefix } from '@/app/utils';
 import { Engine } from '@/app/core/models';
 import { SelectionWidget } from './selection.widget';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-aux-tool-widget',
@@ -20,12 +21,14 @@ export class AuxToolWidget implements AfterViewInit {
 
   @ViewChild('ref') ref: ElementRef;
 
-  constructor(private engine: Engine) {}
+  constructor(
+    private engine: Engine,
+    private hookService: HookService
+  ) {}
 
   ngAfterViewInit(): void {
     const element = this.ref.nativeElement;
-    const viewport = this.engine.workbench.currentWorkspace.viewport;
-
+    const viewport = this.hookService.useViewport();
     this.engine.subscribeWith('viewport:scroll', () => {
       if (viewport.isIframe && element) {
         element.style.transform = `perspective(1px) translate3d(${-viewport.scrollX}px,${-viewport.scrollY}px,0)`;

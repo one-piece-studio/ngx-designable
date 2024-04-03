@@ -12,6 +12,7 @@ import { Engine, TreeNode } from '@/app/core/models';
 import { usePrefix } from '@/app/utils';
 import { SelectorWidget } from '@/app/components/widgets/aux-tool/selector.widget';
 import { Viewport } from '@/app/core/models/viewport';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-helpers-widget',
@@ -42,32 +43,21 @@ export class HelpersWidget implements OnChanges {
 
   viewport: Viewport;
 
-  promise: Promise<void>;
-
-  resolve: () => void;
-
-  reject: (error) => void;
-
   constructor(
     private designer: Engine,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private hookService: HookService
   ) {
-    this.viewport = this.designer.workbench.currentWorkspace.viewport;
-    this.promise = new Promise((resolve, reject) => {
-      this.resolve = resolve;
-      this.reject = reject;
-    });
+    this.viewport = this.hookService.useViewport();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.nodeRect && changes.nodeRect.currentValue) {
-      this.update();
-      this.resolve();
+      setTimeout(() => this.update());
     }
   }
 
-  async update() {
-    await this.promise;
+  update() {
     const helpersRect = this.container?.nativeElement?.getBoundingClientRect();
     if (!helpersRect || !this.nodeRect) return;
     this.position =

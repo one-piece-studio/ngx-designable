@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  SimpleChanges
+} from '@angular/core';
 import { usePrefix } from '@/app/utils';
 import { Engine, TreeNode } from '@/app/core/models';
 import { Selection } from '@/app/core/models/selection';
@@ -6,6 +14,8 @@ import { Cursor } from '@/app/core/models/cursor';
 import { MoveHelper } from '@/app/core/models/move-helper';
 import { AttributeDirective } from '@/app/directive';
 import { HelpersWidget } from '@/app/components/widgets/aux-tool/helpers.widget';
+import { fromEvent } from 'rxjs';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-selection-box-widget',
@@ -22,7 +32,7 @@ import { HelpersWidget } from '@/app/components/widgets/aux-tool/helpers.widget'
   imports: [AttributeDirective, HelpersWidget],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class SelectionBoxWidget implements OnChanges {
+export class SelectionBoxWidget implements OnChanges, AfterViewInit {
   @Input() node: TreeNode;
 
   @Input() showHelpers: boolean;
@@ -52,8 +62,13 @@ export class SelectionBoxWidget implements OnChanges {
   };
   constructor(
     private designer: Engine,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private hookService: HookService
   ) {}
+
+  ngAfterViewInit(): void {
+    fromEvent(window, 'resize').subscribe(() => this.update());
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.node && changes.node.currentValue) {
@@ -62,7 +77,7 @@ export class SelectionBoxWidget implements OnChanges {
   }
 
   update() {
-    this.nodeRect = this.designer.workbench.currentWorkspace.viewport.getValidNodeOffsetRect(this.node) as any;
+    this.nodeRect = this.hookService.useViewport().getValidNodeOffsetRect(this.node) as any;
     this.attributes = {
       [this.designer.props?.nodeSelectionIdAttrName]: this.node.id
     };
@@ -97,11 +112,10 @@ export class SelectionWidget {
 
   tree: TreeNode;
 
-  constructor(private designer: Engine) {
-    const operation = this.designer.workbench.currentWorkspace.operation;
-    this.selection = operation.selection;
-    this.viewportMoveHelper = operation.moveHelper;
-    this.tree = operation.tree;
-    this.cursor = this.designer.cursor;
+  constructor(private hookService: HookService) {
+    this.selection = this.hookService.useSelection();
+    this.viewportMoveHelper = this.hookService.useMoveHelper();
+    this.tree = this.hookService.useTree();
+    this.cursor = this.hookService.useCursor();
   }
 }

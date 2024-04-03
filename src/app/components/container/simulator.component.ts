@@ -47,7 +47,6 @@ export class SimulatorComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    console.log('template>>>', this.template);
     this.responsiveService.subscribe(() => this.cdr.detectChanges());
   }
 

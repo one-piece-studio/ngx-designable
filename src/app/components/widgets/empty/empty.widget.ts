@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, I
 import { usePrefix } from '@/app/utils';
 import { IconWidget } from '../icon/icon.widget';
 import { Engine, TreeNode } from '@/app/core/models';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-empty-widget',
@@ -41,18 +42,15 @@ export class EmptyWidget implements AfterViewInit {
   tree: TreeNode;
   constructor(
     private designer: Engine,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private hookService: HookService
   ) {}
 
   ngAfterViewInit(): void {
-    this.tree = this.useTree();
+    this.tree = this.hookService.useTree();
 
     setInterval(() => {
       this.cdr.markForCheck();
     }, 1000);
-  }
-
-  useTree() {
-    return this.designer.workbench.currentWorkspace.operation.tree;
   }
 }

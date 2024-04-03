@@ -13,6 +13,7 @@ import { IDesignerComponents } from '../../types';
 import { GlobalRegistry } from '@/app/core/registry';
 import { Engine, TreeNode } from '@/app/core/models';
 import { AttributeDirective } from '@/app/directive';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-component-tree-widget',
@@ -41,7 +42,8 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
 
   constructor(
     private designer: Engine,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private hookService: HookService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -51,7 +53,7 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.tree = this.useTree();
+    this.tree = this.hookService.useTree();
     this.attributes = {
       [this.designer?.props?.nodeIdAttrName]: this.tree.id
     };
@@ -60,9 +62,5 @@ export class ComponentTreeWidget implements OnChanges, AfterViewInit {
 
   registerDesignerBehaviors() {
     GlobalRegistry.registerDesignerBehaviors(this.components);
-  }
-
-  useTree() {
-    return this.designer.workbench.currentWorkspace.operation.tree;
   }
 }

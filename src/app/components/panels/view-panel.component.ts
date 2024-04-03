@@ -3,6 +3,7 @@ import { WorkspacePanelItemComponent } from '@/app/components/panels/workspace-p
 import { WorkbenchTypes } from '@/app/core/types';
 import { Workbench } from '@/app/core/models/workbench';
 import { ViewportComponent } from '@/app/components/container/viewport.component';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-view-panel',
@@ -29,7 +30,7 @@ export class ViewPanelComponent implements OnChanges {
 
   @Input() dragTipsDirection?: 'left' | 'right';
 
-  workbench: Workbench = { type: 'DESIGNABLE' } as any;
+  workbench: Workbench;
 
   defaultStyle = signal({
     overflow: 'overlay',
@@ -37,6 +38,10 @@ export class ViewPanelComponent implements OnChanges {
     cursor: 'auto',
     userSelect: 'text'
   });
+
+  constructor(private hookService: HookService) {
+    this.workbench = this.hookService.useWorkbench();
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.scrollable) {
