@@ -1,8 +1,8 @@
 <app-designer>
   <app-workbench>
     <app-studio-panel>
-      <p logo>logo</p>
-      <div action>action</div>
+      <ng-container logo *ngTemplateOutlet="logo"></ng-container>
+      <ng-container action *ngTemplateOutlet="action"></ng-container>
       <app-composite-panel>
         <app-composite-panel-item title="panels.Component" icon="Component">
           <app-resource title="sources.Inputs" [sources]="resourceList"></app-resource>
@@ -29,3 +29,19 @@
     </app-studio-panel>
   </app-workbench>
 </app-designer>
+
+<ng-template #logo>
+  <p class="mb-0 text-lg text-transparent bg-clip-text bg-gradient-to-r from-[#8514f5] via-[#f637e3] to-[#fa2c05]">dynamic form designer</p>
+</ng-template>
+
+<ng-template #action>
+  <div class="flex ml-2 gap-2 h-10 items-center">
+    <nz-radio-group [(ngModel)]="language">
+      <label nz-radio-button nzValue="English">English</label>
+      <label nz-radio-button nzValue="中文">中文</label>
+    </nz-radio-group>
+
+    <button nz-button>保存</button>
+    <button nzType="primary" nz-button>发布</button>
+  </div>
+</ng-template>

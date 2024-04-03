@@ -50,6 +50,7 @@ import { ComponentTreeWidget } from '@/app/components/widgets/component-tree/com
 })
 export class HomeComponent implements OnInit {
   resourceList: IResourceLike[] = [];
+  language: string = '中文';
   constructor() {}
 
   ngOnInit(): void {
