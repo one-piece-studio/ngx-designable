@@ -3,17 +3,19 @@ import { usePrefix } from '@/app/utils';
 import { Engine } from '@/app/core/models';
 import { SelectionWidget } from './selection.widget';
 import { HookService } from '@/app/services/hook.service';
+import { DashBoxWidget } from '@/app/components/widgets/aux-tool/dash-box.widget';
 
 @Component({
   selector: 'app-aux-tool-widget',
   template: `
     <div #ref class="{{ prefix }}">
       <app-selection-widget></app-selection-widget>
+      <app-dash-box></app-dash-box>
     </div>
   `,
   styleUrls: ['./styles.less'],
   standalone: true,
-  imports: [SelectionWidget],
+  imports: [SelectionWidget, DashBoxWidget],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AuxToolWidget implements AfterViewInit {

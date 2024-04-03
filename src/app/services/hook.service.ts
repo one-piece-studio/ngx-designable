@@ -65,4 +65,9 @@ export class HookService {
     const workspace = this.useWorkspace(workspaceId);
     return workspace?.outline;
   }
+
+  useHover(workspaceId?: string) {
+    const operation = this.useOperation(workspaceId);
+    return operation?.hover;
+  }
 }
