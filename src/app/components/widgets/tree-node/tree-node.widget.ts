@@ -21,9 +21,9 @@ import { fromEvent, Subject, takeUntil } from 'rxjs';
   template: `
     @if (node && !node.hidden) {
       @if (component) {
-        <div #container>
+        <ng-container #container>
           <ng-container *ngTemplateOutlet="renderChildren; context: { $implicit: node }"></ng-container>
-        </div>
+        </ng-container>
       } @else {
         <ng-container *ngTemplateOutlet="renderChildren; context: { $implicit: node }"></ng-container>
       }
@@ -62,10 +62,7 @@ export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     fromEvent(window, 'mouseup')
       .pipe(takeUntil(this.destroy$))
-      .subscribe(ev => {
-        console.log('tree-node-widget>>>', ev);
-        this.cdr.markForCheck();
-      });
+      .subscribe(() => this.cdr.detectChanges());
   }
 
   ngOnChanges(changes: SimpleChanges): void {

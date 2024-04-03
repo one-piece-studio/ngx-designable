@@ -1,15 +1,17 @@
 import { Component, Injectable, Input, OnChanges, signal, SimpleChanges, ViewContainerRef } from '@angular/core';
-import { TreeNode } from '../../core/models';
+import { Engine, TreeNode } from '../../core/models';
 import { NgIf } from '@angular/common';
+import { AttributeDirective } from '@/app/directive';
 
 @Component({
   selector: 'app-field',
   template: `
-    <span [style]="currentStyle()">
+    <span [style]="currentStyle()" [attributes]="attributes">
       <span data-content-editable="title">{{ node.props.title }}</span>
       <ng-content></ng-content>
     </span>
   `,
+  imports: [AttributeDirective],
   standalone: true
 })
 export class FieldWidget implements OnChanges {
@@ -17,12 +19,16 @@ export class FieldWidget implements OnChanges {
 
   @Input() style: { [p: string]: any };
 
+  attributes: { [p: string]: any };
+
   currentStyle = signal({
     background: '#eee',
     display: 'inline-block',
     padding: '10px 20px',
     border: '1px solid #ddd'
   });
+
+  constructor(private designer: Engine) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.style && changes.style.currentValue) {
@@ -34,18 +40,23 @@ export class FieldWidget implements OnChanges {
         border: '1px solid #ddd'
       });
     }
+    if (changes.node) {
+      this.attributes = {
+        [this.designer?.props?.nodeIdAttrName]: this.node.id
+      };
+    }
   }
 }
 
 @Component({
   selector: 'app-card',
   template: `
-    <div [style]="currentStyle()">
+    <div [style]="currentStyle()" [attributes]="attributes">
       <span *ngIf="!hasContent()">拖拽字段进入该区域</span>
       <ng-content></ng-content>
     </div>
   `,
-  imports: [NgIf],
+  imports: [NgIf, AttributeDirective],
   standalone: true
 })
 export class CardWidget implements OnChanges {
@@ -64,7 +75,12 @@ export class CardWidget implements OnChanges {
     alignItems: 'center'
   });
 
-  constructor(private viewContainerRef: ViewContainerRef) {}
+  attributes: { [p: string]: any };
+
+  constructor(
+    private viewContainerRef: ViewContainerRef,
+    private designer: Engine
+  ) {}
 
   hasContent() {
     return !!this.viewContainerRef.length;
@@ -83,6 +99,11 @@ export class CardWidget implements OnChanges {
         alignItems: 'center',
         ...this.style
       });
+    }
+    if (changes.node) {
+      this.attributes = {
+        [this.designer?.props?.nodeIdAttrName]: this.node.id
+      };
     }
   }
 }

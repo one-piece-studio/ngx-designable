@@ -14,7 +14,7 @@ import { Cursor } from '@/app/core/models/cursor';
 import { MoveHelper } from '@/app/core/models/move-helper';
 import { AttributeDirective } from '@/app/directive';
 import { HelpersWidget } from '@/app/components/widgets/aux-tool/helpers.widget';
-import { fromEvent } from 'rxjs';
+import { debounceTime, fromEvent } from 'rxjs';
 import { HookService } from '@/app/services/hook.service';
 
 @Component({
@@ -112,10 +112,17 @@ export class SelectionWidget {
 
   tree: TreeNode;
 
-  constructor(private hookService: HookService) {
+  constructor(
+    private hookService: HookService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.selection = this.hookService.useSelection();
     this.viewportMoveHelper = this.hookService.useMoveHelper();
     this.tree = this.hookService.useTree();
     this.cursor = this.hookService.useCursor();
+
+    fromEvent(window, 'mouseup')
+      .pipe(debounceTime(100))
+      .subscribe(() => this.cdr.detectChanges());
   }
 }
