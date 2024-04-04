@@ -68,6 +68,9 @@ export class SelectionBoxWidget implements OnChanges, AfterViewInit {
 
   ngAfterViewInit(): void {
     fromEvent(window, 'resize').subscribe(() => this.update());
+    fromEvent(window, 'mouseup')
+      .pipe(debounceTime(100))
+      .subscribe(() => this.update());
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -124,11 +127,5 @@ export class SelectionWidget {
     fromEvent(window, 'mouseup')
       .pipe(debounceTime(100))
       .subscribe(() => this.cdr.detectChanges());
-    fromEvent(window, 'mousedown')
-      .pipe(debounceTime(100))
-      .subscribe(() => {
-        console.log('selection>>>', this.selection);
-        this.cdr.detectChanges();
-      });
   }
 }
