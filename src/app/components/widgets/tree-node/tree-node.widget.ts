@@ -14,6 +14,7 @@ import { TreeNode } from '@/app/core/models';
 import { NgTemplateOutlet } from '@angular/common';
 import { WidgetFactory } from '@/app/pages/home/register';
 import { fromEvent, Subject, takeUntil } from 'rxjs';
+import { ResponsiveService } from '@/app/services/responsive.service';
 
 @Component({
   selector: 'app-tree-node-widget',
@@ -51,7 +52,8 @@ export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
 
   constructor(
     private factory: WidgetFactory,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private responsiveService: ResponsiveService
   ) {}
 
   ngOnDestroy(): void {
@@ -60,6 +62,8 @@ export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
+    this.responsiveService.subscribe(() => this.cdr.detectChanges());
+
     fromEvent(window, 'mouseup')
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.cdr.detectChanges());

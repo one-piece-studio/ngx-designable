@@ -13,6 +13,9 @@ import { usePrefix } from '@/app/utils';
 import { SelectorWidget } from '@/app/components/widgets/aux-tool/selector.widget';
 import { Viewport } from '@/app/core/models/viewport';
 import { HookService } from '@/app/services/hook.service';
+import { CopyWidget } from '@/app/components/widgets/aux-tool/copy.widget';
+import { DeleteWidget } from '@/app/components/widgets/aux-tool/delete.widget';
+import { DragHandlerWidget } from '@/app/components/widgets/aux-tool/drag-handler.widget';
 
 @Component({
   selector: 'app-helpers-widget',
@@ -21,13 +24,22 @@ import { HookService } from '@/app/services/hook.service';
       <div class="{{ prefix }} {{ position }}" #container>
         <div class="{{ prefix }}-content">
           <app-selector-widget [node]="node"></app-selector-widget>
+          @if (node.allowClone()) {
+            <app-copy [node]="node"></app-copy>
+          }
+          @if (node.allowDrag()) {
+            <app-drag-handler [node]="node"></app-drag-handler>
+          }
+          @if (node.allowDelete()) {
+            <app-delete [node]="node"></app-delete>
+          }
         </div>
       </div>
     }
   `,
   standalone: true,
   styleUrls: ['./styles.less'],
-  imports: [SelectorWidget],
+  imports: [SelectorWidget, CopyWidget, DeleteWidget, DragHandlerWidget],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HelpersWidget implements OnChanges {

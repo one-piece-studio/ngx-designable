@@ -27,5 +27,8 @@ export enum IconType {
   Command = 'Command',
   Shift = 'Shift',
   Delete = 'Delete',
-  Page = 'Page'
+  Page = 'Page',
+  Clone = 'Clone',
+  Container = 'Container',
+  Remove = 'Remove'
 }
