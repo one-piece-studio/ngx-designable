@@ -1,5 +1,5 @@
 import { AbstractCursorEvent } from './AbstractCursorEvent';
-import { ICustomEvent } from '../../../shared/event';
+import { ICustomEvent } from '@/app/shared/event';
 
 export class MouseClickEvent extends AbstractCursorEvent implements ICustomEvent {
   type = 'mouse:click';

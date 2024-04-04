@@ -15,7 +15,6 @@ export class DragDropDriver extends EventDriver<Engine> {
   startEvent: MouseEvent;
 
   onMouseDown = (e: MouseEvent) => {
-    console.log('onMouseDown>>>', e);
     if (e.button !== 0 || e.ctrlKey || e.metaKey) {
       return false;
     }

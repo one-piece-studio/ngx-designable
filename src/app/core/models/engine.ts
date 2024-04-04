@@ -6,6 +6,7 @@ import { uid } from '@/app/shared/uid';
 import { TreeNode } from '@/app/core/models/tree-node';
 import { Event } from '@/app/shared/event';
 import { globalThisPolyfill } from '@/app/shared/globalThisPolyfill';
+import { Keyboard } from '@/app/core/models/keyboard';
 
 /**
  * 设计器引擎
@@ -19,7 +20,7 @@ export class Engine extends Event {
 
   workbench: Workbench;
 
-  // keyboard: Keyboard
+  keyboard: Keyboard;
 
   screen: Screen;
 
@@ -37,7 +38,7 @@ export class Engine extends Event {
     this.workbench = new Workbench(this);
     this.screen = new Screen(this);
     this.cursor = new Cursor(this);
-    // this.keyboard = new Keyboard(this)
+    this.keyboard = new Keyboard(this);
   }
 
   getAllSelectedNodes() {

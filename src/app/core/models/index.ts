@@ -12,3 +12,4 @@ export * from './transform-helper';
 export * from './viewport';
 export * from './workbench';
 export * from './workspace';
+export * from './keyboard';

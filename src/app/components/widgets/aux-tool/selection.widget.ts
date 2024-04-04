@@ -86,7 +86,7 @@ export class SelectionBoxWidget implements OnChanges, AfterViewInit {
 }
 
 @Component({
-  selector: 'app-selection-widget',
+  selector: 'app-selection',
   template: `
     @if (cursor.status === 'NORMAL' || !viewportMoveHelper.touchNode) {
       @for (id of selection.selected; track id) {
@@ -124,5 +124,11 @@ export class SelectionWidget {
     fromEvent(window, 'mouseup')
       .pipe(debounceTime(100))
       .subscribe(() => this.cdr.detectChanges());
+    fromEvent(window, 'mousedown')
+      .pipe(debounceTime(100))
+      .subscribe(() => {
+        console.log('selection>>>', this.selection);
+        this.cdr.detectChanges();
+      });
   }
 }

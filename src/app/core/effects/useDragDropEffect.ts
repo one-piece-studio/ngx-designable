@@ -1,9 +1,9 @@
 import { Engine, TreeNode } from '../models';
 import { DragMoveEvent, DragStartEvent, DragStopEvent } from '../events/cursor';
 import { CursorDragType, CursorType } from '../models/cursor';
-import { ClosestPosition } from '../models/move-helper';
+import { ClosestPosition } from '@/app/core/models';
 import { Point } from '../../shared/coordinate';
-import { ViewportScrollEvent } from '../events/viewport';
+import { ViewportScrollEvent } from '@/app/core/events';
 
 export const useDragDropEffect = (engine: Engine) => {
   engine.subscribeTo(DragStartEvent, event => {
