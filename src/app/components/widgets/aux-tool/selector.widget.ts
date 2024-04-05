@@ -33,7 +33,7 @@ import { IconWidget } from '@/app/components/widgets/icon/icon.widget';
   standalone: true,
   styleUrls: ['./styles.less'],
   imports: [SharedModule, NodeTitleWidget, IconWidget],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
   encapsulation: ViewEncapsulation.None
 })
 export class SelectorWidget {

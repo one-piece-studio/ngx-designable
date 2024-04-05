@@ -59,7 +59,7 @@ import { NgIf } from '@angular/common';
     `
   ],
   styleUrls: ['../styles/styles.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class SettingPanelComponent {
   prefix: string = usePrefix('settings-panel');

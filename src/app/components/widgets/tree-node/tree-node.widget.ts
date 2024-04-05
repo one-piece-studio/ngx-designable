@@ -39,7 +39,7 @@ import { ResponsiveService } from '@/app/services/responsive.service';
   `,
   styles: [``],
   imports: [NgTemplateOutlet],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
   @Input() node: TreeNode;

@@ -12,7 +12,7 @@ import { Engine } from '@/app/core/models';
     </div>
   `,
   styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class WorkspaceComponent implements OnInit {
   constructor(private designer: Engine) {}

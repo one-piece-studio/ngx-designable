@@ -22,7 +22,7 @@ import { SimulatorComponent } from '@/app/components/container/simulator.compone
       }
     `
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ViewportPanelComponent {
   @Input() style: { [p: string]: any } = { height: '100%' };

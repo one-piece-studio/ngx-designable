@@ -23,7 +23,7 @@ import { usePrefix } from '@/app/utils';
   `,
   styles: [``],
   styleUrls: ['../styles/styles.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class StudioPanelComponent implements OnInit {
   prefix = usePrefix('main-panel');

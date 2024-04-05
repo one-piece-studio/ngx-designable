@@ -29,7 +29,7 @@ import { fromEvent, Subject, takeUntil } from 'rxjs';
   `,
   imports: [NodeTitleWidget],
   styleUrls: ['./ghost.widget.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class GhostWidget implements AfterViewInit, OnDestroy {
   @ViewChild('containerRef') containerRef: ElementRef;

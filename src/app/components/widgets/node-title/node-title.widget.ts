@@ -5,7 +5,7 @@ import { TreeNode } from '@/app/core/models';
   selector: 'app-node-title-widget',
   standalone: true,
   template: ` {{ currentTitle }} `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class NodeTitleWidget implements OnChanges {
   @Input() node: TreeNode;

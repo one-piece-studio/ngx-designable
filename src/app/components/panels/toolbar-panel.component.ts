@@ -11,7 +11,7 @@ import { WorkspacePanelItemComponent } from './workspace-panel.component';
     </app-workspace-panel-item>
   `,
   styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ToolbarPanelComponent implements OnChanges {
   @Input() style: { [p: string]: any };

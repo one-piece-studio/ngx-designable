@@ -40,7 +40,7 @@ import { DragHandlerWidget } from '@/app/components/widgets/aux-tool/drag-handle
   standalone: true,
   styleUrls: ['./styles.less'],
   imports: [SelectorWidget, CopyWidget, DeleteWidget, DragHandlerWidget],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class HelpersWidget implements OnChanges {
   prefix = usePrefix('aux-helpers');

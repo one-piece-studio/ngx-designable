@@ -11,7 +11,7 @@ import { ResponsiveService } from '@/app/services/responsive.service';
   standalone: true,
   templateUrl: './designer-tool.widget.html',
   imports: [SharedModule, IconWidget],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class DesignerToolWidget {
   prefix = usePrefix('designer-tools');

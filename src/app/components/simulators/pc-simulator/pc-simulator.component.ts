@@ -10,7 +10,7 @@ import { usePrefix } from '../../../utils';
   `,
   styleUrls: ['./pc-simulator.component.less'],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class PcSimulatorComponent {
   prefix = usePrefix('pc-simulator');

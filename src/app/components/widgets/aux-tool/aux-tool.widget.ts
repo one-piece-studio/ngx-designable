@@ -28,7 +28,7 @@ import { fromEvent } from 'rxjs';
   styleUrls: ['./styles.less'],
   standalone: true,
   imports: [SelectionWidget, DashBoxWidget, CoverWidget, InsertionWidget],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class AuxToolWidget implements AfterViewInit {
   prefix = usePrefix('auxtool');

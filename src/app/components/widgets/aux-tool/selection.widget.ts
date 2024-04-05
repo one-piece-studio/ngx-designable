@@ -104,7 +104,7 @@ export class SelectionBoxWidget implements OnChanges, AfterViewInit {
   `,
   standalone: true,
   imports: [SelectionBoxWidget],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class SelectionWidget {
   selection: Selection;

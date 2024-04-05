@@ -16,7 +16,7 @@ import { MobileBodyComponent } from './mobile-body.component';
   standalone: true,
   styleUrls: ['./mobile-simulator.component.less'],
   imports: [MobileBodyComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class MobileSimulatorComponent {
   prefix = usePrefix('mobile-simulator');

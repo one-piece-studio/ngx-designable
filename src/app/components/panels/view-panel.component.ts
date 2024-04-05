@@ -21,7 +21,7 @@ import { HookService } from '@/app/services/hook.service';
     }
   `,
   styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ViewPanelComponent implements OnChanges {
   @Input() scrollable: boolean = true;

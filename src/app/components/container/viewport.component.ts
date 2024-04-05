@@ -19,7 +19,7 @@ import { HookService } from '@/app/services/hook.service';
     </div>
   `,
   styleUrls: ['../styles/styles.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ViewportComponent implements AfterViewInit, OnDestroy {
   prefix = usePrefix('viewport');

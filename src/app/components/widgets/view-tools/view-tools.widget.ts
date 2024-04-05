@@ -34,7 +34,7 @@ import { IconWidget } from '../icon/icon.widget';
   `,
   styleUrls: ['../../styles/styles.less'],
   imports: [SharedModule, IconWidget],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ViewToolsWidget {
   prefix = usePrefix('view-tools');

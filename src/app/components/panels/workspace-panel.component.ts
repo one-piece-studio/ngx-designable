@@ -19,7 +19,7 @@ import { usePrefix } from '@/app/utils';
     `
   ],
   styleUrls: ['../styles/styles.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class WorkspacePanelComponent {
   prefix = usePrefix('workspace-panel');
@@ -36,7 +36,7 @@ export class WorkspacePanelComponent {
   `,
   styles: [``],
   styleUrls: ['../styles/styles.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class WorkspacePanelItemComponent implements OnChanges {
   prefix = usePrefix('workspace-panel-item');

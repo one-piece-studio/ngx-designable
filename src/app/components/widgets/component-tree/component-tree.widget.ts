@@ -25,7 +25,7 @@ import { HookService } from '@/app/services/hook.service';
   `,
   styleUrls: ['./component-tree.widget.less'],
   imports: [TreeNodeWidget, AttributeDirective],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ComponentTreeWidget implements OnChanges, AfterViewInit {
   prefix = usePrefix('component-tree');

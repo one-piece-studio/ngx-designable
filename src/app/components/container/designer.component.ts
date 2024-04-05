@@ -15,7 +15,7 @@ import { GhostWidget } from '@/app/components/widgets/ghost/ghost.widget';
     </div>
   `,
   styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class DesignerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() prefixClass = APP_PREFIX;

@@ -32,7 +32,7 @@ import { ResponsiveService } from '@/app/services/responsive.service';
   styles: [``],
   standalone: true,
   imports: [PcSimulatorComponent, MobileSimulatorComponent, NgTemplateOutlet],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class SimulatorComponent implements AfterViewInit {
   @ContentChild(TemplateRef) template: TemplateRef<any>;

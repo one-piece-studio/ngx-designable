@@ -27,7 +27,7 @@ import { NgOptimizedImage } from '@angular/common';
     </span>
   `,
   styleUrls: ['./icon.widget.less', '../../styles/styles.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class IconWidget implements OnChanges, AfterViewInit {
   @Input() icon: string;

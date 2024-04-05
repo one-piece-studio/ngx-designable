@@ -25,7 +25,7 @@ import { NgIf } from '@angular/common';
     </ng-container>
   `,
   styleUrls: ['../styles/styles.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class CompositePanelItemComponent {
   @Input() title: string | undefined;
@@ -96,7 +96,7 @@ export class CompositePanelItemComponent {
   ],
   styleUrls: ['../styles/styles.less'],
   providers: [],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class CompositePanelComponent implements AfterViewInit {
   prefix = usePrefix('composite-panel');

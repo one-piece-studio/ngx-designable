@@ -32,7 +32,7 @@ import { HookService } from '@/app/services/hook.service';
   styleUrls: ['./empty.widget.less'],
   standalone: true,
   imports: [IconWidget],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class EmptyWidget implements AfterViewInit {
   prefix = usePrefix('empty');

@@ -42,7 +42,7 @@ import { NgOptimizedImage, NgStyle } from '@angular/common';
   standalone: true,
   styleUrls: ['./mobile-simulator.component.less'],
   imports: [NgOptimizedImage, NgStyle],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class MobileBodyComponent {
   prefix = usePrefix('mobile-simulator-body');

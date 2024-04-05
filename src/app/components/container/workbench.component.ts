@@ -14,6 +14,6 @@ import { WorkspaceComponent } from './workspace.component';
     </div>
   `,
   styles: [``],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class WorkbenchComponent {}
