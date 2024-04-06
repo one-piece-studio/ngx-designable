@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
   OnChanges,
   OnDestroy,
@@ -22,20 +23,22 @@ import { ResponsiveService } from '@/app/services/responsive.service';
   template: `
     @if (node && !node.hidden) {
       @if (component) {
-        <ng-container #container>
-          <ng-container *ngTemplateOutlet="renderChildren; context: { $implicit: node }"></ng-container>
-        </ng-container>
+        <ng-container #container> </ng-container>
       } @else {
-        <ng-container *ngTemplateOutlet="renderChildren; context: { $implicit: node }"></ng-container>
-      }
-    }
-    <ng-template #renderChildren let-node>
-      @if (node.children && node.children.length > 0) {
-        @for (child of node.children; track child.id) {
-          <app-tree-node-widget [node]="child"></app-tree-node-widget>
+        @if (node?.children?.length) {
+          @for (child of node.children; track child.id) {
+            <app-tree-node-widget [node]="child"></app-tree-node-widget>
+          }
         }
       }
-    </ng-template>
+    }
+    <template #renderChildren>
+      @if (node?.children && node?.children.length > 0) {
+        @for (child of node.children; track child.id) {
+          <app-tree-node-widget #treeNodeWidget [node]="child"></app-tree-node-widget>
+        }
+      }
+    </template>
   `,
   styles: [``],
   imports: [NgTemplateOutlet],
@@ -45,6 +48,8 @@ export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
   @Input() node: TreeNode;
 
   @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
+
+  @ViewChild('renderChildren') children: ElementRef<any>;
 
   component: string;
 
@@ -74,7 +79,11 @@ export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
       const name = this.node.componentName;
       this.component = this.factory.get(name);
       setTimeout(() => {
-        const ref = this.factory.createComponent(this.container, name);
+        const options = {} as any;
+        if (this.children?.nativeElement) {
+          options['projectableNodes'] = [[this.children.nativeElement.content]];
+        }
+        const ref = this.factory.createComponent(this.container, name, options);
         if (ref) {
           ref.setInput('node', this.node);
         }

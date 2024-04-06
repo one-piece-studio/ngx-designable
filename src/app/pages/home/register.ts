@@ -1,7 +1,22 @@
-import { Component, Injectable, Input, OnChanges, signal, SimpleChanges, ViewContainerRef } from '@angular/core';
+import {
+  Component,
+  ContentChildren,
+  ElementRef,
+  EnvironmentInjector,
+  Injectable,
+  Injector,
+  Input,
+  NgModuleRef,
+  OnChanges,
+  QueryList,
+  signal,
+  SimpleChanges,
+  ViewContainerRef
+} from '@angular/core';
 import { Engine, TreeNode } from '../../core/models';
 import { NgIf } from '@angular/common';
 import { AttributeDirective } from '@/app/directive';
+import { TreeNodeWidget } from '@/app/components/widgets/tree-node/tree-node.widget';
 
 @Component({
   selector: 'app-field',
@@ -64,6 +79,8 @@ export class CardWidget implements OnChanges {
 
   @Input() style: { [p: string]: any };
 
+  @ContentChildren(TreeNodeWidget, { descendants: true }) content: QueryList<TreeNodeWidget>;
+
   currentStyle = signal({
     width: '200px',
     height: '100px',
@@ -79,11 +96,13 @@ export class CardWidget implements OnChanges {
 
   constructor(
     private viewContainerRef: ViewContainerRef,
-    private designer: Engine
+    private designer: Engine,
+    private elementRef: ElementRef
   ) {}
 
   hasContent() {
-    return !!this.viewContainerRef.length;
+    const element = this.elementRef.nativeElement.querySelector('app-tree-node-widget');
+    return !!element;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -127,10 +146,20 @@ export class WidgetFactory {
     return this._container.get(name);
   }
 
-  createComponent(container: ViewContainerRef, name: string) {
+  createComponent(
+    container: ViewContainerRef,
+    name: string,
+    options?: {
+      index?: number;
+      injector?: Injector;
+      ngModuleRef?: NgModuleRef<unknown>;
+      environmentInjector?: EnvironmentInjector | NgModuleRef<unknown>;
+      projectableNodes?: Node[][];
+    }
+  ) {
     const component = this._container.get(name);
     if (component) {
-      return container.createComponent(component);
+      return container.createComponent(component, options);
     }
     return null;
   }
