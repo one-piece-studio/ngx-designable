@@ -3,6 +3,7 @@ import { PcSimulatorComponent } from '../simulators/pc-simulator/pc-simulator.co
 import { Engine, Screen, ScreenType } from '@/app/core/models';
 import { MobileSimulatorComponent } from '@/app/components/simulators/mobile-simulator/mobile-simulator.component';
 import { NgTemplateOutlet } from '@angular/common';
+import { ResponsiveSimulator } from '@/app/components/simulators/responsive-simulator/responsive-simulator.component';
 
 @Component({
   selector: 'app-simulator',
@@ -16,14 +17,14 @@ import { NgTemplateOutlet } from '@angular/common';
         <ng-container *ngTemplateOutlet="template"></ng-container>
       </app-mobile-simulator>
     } @else {
-      <app-pc-simulator>
+      <app-responsive-simulator>
         <ng-container *ngTemplateOutlet="template"></ng-container>
-      </app-pc-simulator>
+      </app-responsive-simulator>
     }
   `,
   styles: [``],
   standalone: true,
-  imports: [PcSimulatorComponent, MobileSimulatorComponent, NgTemplateOutlet],
+  imports: [PcSimulatorComponent, MobileSimulatorComponent, NgTemplateOutlet, ResponsiveSimulator],
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class SimulatorComponent {

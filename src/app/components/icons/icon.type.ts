@@ -31,5 +31,8 @@ export enum IconType {
   Clone = 'Clone',
   Container = 'Container',
   Remove = 'Remove',
-  Flip = 'Flip'
+  Flip = 'Flip',
+  Recover = 'Recover',
+  Menu = 'Menu',
+  DragMove = 'DragMove'
 }

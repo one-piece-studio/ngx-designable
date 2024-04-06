@@ -21,9 +21,6 @@
     </nz-button-group>
   }
 
-  @if (use.includes('SCREEN_TYPE') && screen.type === ScreenType.Responsive){
-
-  }
 
   @if (use.includes('SCREEN_TYPE')){
     <nz-button-group nzSize="small" class="mr-5">
@@ -38,6 +35,18 @@
       </button>
     </nz-button-group>
   }
+
+  @if (use.includes('SCREEN_TYPE') && screen.type === ScreenType.Responsive){
+    <nz-input-number nzSize="small" [(ngModel)]="screen.width" class="w-[70px] text-center"></nz-input-number>
+    <app-icon [size]="10" icon="Close" [style]="{padding: '0 3px',color: '#999'}"></app-icon>
+    <nz-input-number nzSize="small" [(ngModel)]="screen.height" class="w-[70px] text-center mr-2.5"></nz-input-number>
+    @if(screen.width !== '100%' || screen.height !== '100%'){
+      <button nz-button nzSize="small" class="mr-5" (click)="screen.resetSize()">
+        <app-icon icon="Recover"></app-icon>
+      </button>
+    }
+  }
+
 
   @if (use.includes('SCREEN_TYPE')  && screen.type === ScreenType.Mobile){
     <button nz-button nzSize="small" class="mr-5" (click)="changeMobileFlip()">

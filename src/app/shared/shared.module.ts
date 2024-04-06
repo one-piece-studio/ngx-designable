@@ -4,8 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
+import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
-const ZORRO_MODULES = [NzButtonModule, NzEmptyModule, NzRadioModule];
+const ZORRO_MODULES = [NzButtonModule, NzEmptyModule, NzRadioModule, NzInputModule, NzInputNumberModule];
 
 @NgModule({
   declarations: [],
