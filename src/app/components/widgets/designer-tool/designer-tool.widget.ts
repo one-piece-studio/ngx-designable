@@ -3,8 +3,8 @@ import { usePrefix } from '@/app/utils';
 import { SharedModule } from '@/app/shared/shared.module';
 import { IconWidget } from '@/app/components/widgets/icon/icon.widget';
 import { Screen, ScreenType } from '@/app/core/models/screen';
-import { Engine } from '@/app/core/models';
-import { ResponsiveService } from '@/app/services/responsive.service';
+import { Cursor, CursorType, History, Workbench } from '@/app/core/models';
+import { HookService } from '@/app/services/hook.service';
 
 @Component({
   selector: 'app-designer-tool-widget',
@@ -22,27 +22,36 @@ export class DesignerToolWidget {
 
   screen: Screen;
 
-  constructor(
-    private designer: Engine,
-    private responsiveService: ResponsiveService
-  ) {
-    this.screen = this.designer.screen;
+  history: History;
+
+  workbench: Workbench;
+
+  cursor: Cursor;
+
+  constructor(private hookService: HookService) {
+    this.screen = this.hookService.useScreen();
+    this.history = this.hookService.useHistory();
+    this.workbench = this.hookService.useWorkbench();
+    this.cursor = this.hookService.useCursor();
   }
 
   protected readonly ScreenType = ScreenType;
 
   selectPc() {
     this.screen.setType(ScreenType.PC);
-    this.responsiveService.change();
   }
 
   selectMobile() {
     this.screen.setType(ScreenType.Mobile);
-    this.responsiveService.change();
   }
 
   selectResponsive() {
     this.screen.setType(ScreenType.Responsive);
-    this.responsiveService.change();
   }
+
+  changeMobileFlip() {
+    this.screen.setFlip(!this.screen.flip);
+  }
+
+  protected readonly CursorType = CursorType;
 }

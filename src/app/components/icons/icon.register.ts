@@ -31,6 +31,7 @@ import { PageSvg } from '@/app/components/icons/page';
 import { CloneSvg } from '@/app/components/icons/clone';
 import { ContainerSvg } from '@/app/components/icons/container';
 import { RemoveSvg } from '@/app/components/icons/remove';
+import { FlipSvg } from '@/app/components/icons/flip';
 
 export class IconRegister extends IconFactory {
   constructor() {
@@ -67,5 +68,6 @@ export class IconRegister extends IconFactory {
     this.register(IconType.Clone, CloneSvg);
     this.register(IconType.Container, ContainerSvg);
     this.register(IconType.Remove, RemoveSvg);
+    this.register(IconType.Flip, FlipSvg);
   }
 }

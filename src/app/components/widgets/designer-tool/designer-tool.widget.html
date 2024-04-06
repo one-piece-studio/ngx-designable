@@ -1,21 +1,21 @@
 <div class="{{prefix}}" [style]="style">
   @if (use.includes('HISTORY')){
-    <nz-button-group nzSize="small" [style]="{marginRight: '20px'}">
-      <button nz-button nzSize="small">
+    <nz-button-group nzSize="small" class="mr-5">
+      <button nz-button nzSize="small" [disabled]="!history?.allowUndo">
         <app-icon icon="Undo"></app-icon>
       </button>
-      <button nz-button nzSize="small">
+      <button nz-button nzSize="small" [disabled]="!history?.allowRedo">
         <app-icon icon="Redo"></app-icon>
       </button>
     </nz-button-group>
   }
 
-  @if (use.includes('CURSOR')){
-    <nz-button-group nzSize="small" [style]="{marginRight: '20px'}">
-      <button nz-button nzSize="small">
+  @if (workbench.type === 'DESIGNABLE' && use.includes('CURSOR')){
+    <nz-button-group nzSize="small" class="mr-5">
+      <button nz-button nzSize="small" [disabled]="cursor.type === CursorType.Normal" (click)="cursor.setType(CursorType.Normal)">
         <app-icon icon="Move"></app-icon>
       </button>
-      <button nz-button nzSize="small">
+      <button nz-button nzSize="small" [disabled]="cursor.type === CursorType.Selection" (click)="cursor.setType(CursorType.Selection)">
         <app-icon icon="Selection"></app-icon>
       </button>
     </nz-button-group>
@@ -26,21 +26,24 @@
   }
 
   @if (use.includes('SCREEN_TYPE')){
-    <nz-button-group nzSize="small" [style]="{marginRight: '20px'}">
-      <button nz-button nzSize="small" (click)="selectPc()">
+    <nz-button-group nzSize="small" class="mr-5">
+      <button nz-button nzSize="small" (click)="selectPc()" [disabled]="screen.type === ScreenType.PC">
         <app-icon icon="Pc"></app-icon>
       </button>
-      <button nz-button nzSize="small" (click)="selectMobile()">
+      <button nz-button nzSize="small" (click)="selectMobile()" [disabled]="screen.type === ScreenType.Mobile">
         <app-icon icon="Mobile"></app-icon>
       </button>
-      <button nz-button nzSize="small" (click)="selectResponsive()">
+      <button nz-button nzSize="small" (click)="selectResponsive()" [disabled]="screen.type === ScreenType.Responsive">
         <app-icon icon="Responsive"></app-icon>
       </button>
     </nz-button-group>
   }
 
   @if (use.includes('SCREEN_TYPE')  && screen.type === ScreenType.Mobile){
-
+    <button nz-button nzSize="small" class="mr-5" (click)="changeMobileFlip()">
+      <app-icon icon="Flip" [style]="{transition: 'all .15s ease-in',
+              transform: screen.flip ? 'rotate(-90deg)' : '',}"></app-icon>
+    </button>
   }
 
 </div>

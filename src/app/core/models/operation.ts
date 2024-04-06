@@ -65,4 +65,21 @@ export class Operation {
     if (this.workspace.dispatch(event) === false) return;
     if (isFn(callback)) return callback();
   }
+
+  from(operation?: IOperation) {
+    if (!operation) return;
+    if (operation.tree) {
+      this.tree.from(operation.tree);
+    }
+    if (operation.selected) {
+      this.selection.selected = operation.selected;
+    }
+  }
+
+  serialize(): IOperation {
+    return {
+      tree: this.tree.serialize(),
+      selected: [this.tree.id]
+    };
+  }
 }

@@ -1,16 +1,18 @@
 import { Engine } from '@/app/core/models/engine';
 import { Viewport } from '@/app/core/models/viewport';
-import { Operation } from '@/app/core/models/operation';
+import { IOperation, Operation } from '@/app/core/models/operation';
 import { History } from '@/app/core/models/history';
 import { EventContainer, ICustomEvent } from '@/app/shared/event';
 import { IEngineContext } from '@/app/core/types';
 import { uid } from '@/app/shared/uid';
 
+import { HistoryGotoEvent, HistoryPushEvent, HistoryRedoEvent, HistoryUndoEvent } from '@/app/core/events/history';
+
 export interface IWorkspace {
   id?: string;
   title?: string;
   description?: string;
-  // operation: IOperation
+  operation: IOperation;
 }
 
 export interface IWorkspaceProps {
@@ -68,6 +70,23 @@ export class Workspace {
       moveInsertionType: 'block'
     });
     this.operation = new Operation(this);
+    this.history = new History(this, {
+      onPush: item => {
+        this.operation.dispatch(new HistoryPushEvent(item));
+      },
+      onRedo: item => {
+        this.operation.hover.clear();
+        this.operation.dispatch(new HistoryRedoEvent(item));
+      },
+      onUndo: item => {
+        this.operation.hover.clear();
+        this.operation.dispatch(new HistoryUndoEvent(item));
+      },
+      onGoto: item => {
+        this.operation.hover.clear();
+        this.operation.dispatch(new HistoryGotoEvent(item));
+      }
+    });
   }
 
   attachEvents(container: EventContainer, contentWindow: Window) {
@@ -89,5 +108,30 @@ export class Workspace {
 
   dispatch(event: ICustomEvent) {
     return this.engine.dispatch(event, this.getEventContext());
+  }
+
+  serialize(): IWorkspace {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      operation: this.operation.serialize()
+    };
+  }
+
+  from(workspace?: IWorkspace) {
+    if (!workspace) return;
+    if (workspace.operation) {
+      this.operation.from(workspace.operation);
+    }
+    if (workspace.id) {
+      this.id = workspace.id;
+    }
+    if (workspace.title) {
+      this.title = workspace.title;
+    }
+    if (workspace.description) {
+      this.description = workspace.description;
+    }
   }
 }

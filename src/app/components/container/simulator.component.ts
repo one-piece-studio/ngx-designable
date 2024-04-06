@@ -1,16 +1,8 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  ContentChild,
-  TemplateRef
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, TemplateRef } from '@angular/core';
 import { PcSimulatorComponent } from '../simulators/pc-simulator/pc-simulator.component';
 import { Engine, Screen, ScreenType } from '@/app/core/models';
 import { MobileSimulatorComponent } from '@/app/components/simulators/mobile-simulator/mobile-simulator.component';
 import { NgTemplateOutlet } from '@angular/common';
-import { ResponsiveService } from '@/app/services/responsive.service';
 
 @Component({
   selector: 'app-simulator',
@@ -34,20 +26,12 @@ import { ResponsiveService } from '@/app/services/responsive.service';
   imports: [PcSimulatorComponent, MobileSimulatorComponent, NgTemplateOutlet],
   changeDetection: ChangeDetectionStrategy.Default
 })
-export class SimulatorComponent implements AfterViewInit {
+export class SimulatorComponent {
   @ContentChild(TemplateRef) template: TemplateRef<any>;
 
   screen: Screen;
-  constructor(
-    private designer: Engine,
-    private responsiveService: ResponsiveService,
-    private cdr: ChangeDetectorRef
-  ) {
+  constructor(private designer: Engine) {
     this.screen = this.designer.screen;
-  }
-
-  ngAfterViewInit(): void {
-    this.responsiveService.subscribe(() => this.cdr.detectChanges());
   }
 
   protected readonly ScreenType = ScreenType;

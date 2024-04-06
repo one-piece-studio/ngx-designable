@@ -31,6 +31,11 @@ export class HookService {
     }
   }
 
+  useHistory(workspaceId?: string) {
+    const workspace = this.useWorkspace(workspaceId);
+    return workspace?.history;
+  }
+
   useOperation(workspaceId?: string) {
     const workspace = this.useWorkspace(workspaceId);
     return workspace?.operation;

@@ -30,5 +30,6 @@ export enum IconType {
   Page = 'Page',
   Clone = 'Clone',
   Container = 'Container',
-  Remove = 'Remove'
+  Remove = 'Remove',
+  Flip = 'Flip'
 }
