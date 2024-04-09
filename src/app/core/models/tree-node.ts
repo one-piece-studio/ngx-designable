@@ -18,6 +18,7 @@ import {
   WrapNodeEvent
 } from '@/app/core/events';
 import _ from 'lodash';
+import { Operation } from '@/app/core/models/operation';
 
 export interface ITreeNode {
   componentName?: string;
@@ -99,7 +100,7 @@ export class TreeNode {
 
   root: TreeNode;
 
-  rootOperation: any;
+  rootOperation: Operation;
 
   id: string;
 
@@ -322,6 +323,7 @@ export class TreeNode {
 
   triggerMutation<T>(event: any, callback?: () => T, defaults?: T): T {
     if (this.operation) {
+      // @ts-ignore
       const result = this.operation.dispatch(event, callback) || defaults;
       this.takeSnapshot(event?.type);
       return result;

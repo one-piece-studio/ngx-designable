@@ -23,6 +23,7 @@ import { ViewportPanelComponent } from '@/app/components/panels/viewport-panel.c
 import { SettingsFormComponent } from '@/app/settings-form/settings-form.component';
 import { ComponentTreeWidget } from '@/app/components/widgets/component-tree/component-tree.widget';
 import { OutlineWidget } from '@/app/components/widgets/outline/outline.widget';
+import { HistoryWidget } from '@/app/components/widgets/history/history.widget';
 
 @Component({
   selector: 'app-home',
@@ -44,7 +45,8 @@ import { OutlineWidget } from '@/app/components/widgets/outline/outline.widget';
     ViewportPanelComponent,
     SettingsFormComponent,
     ComponentTreeWidget,
-    OutlineWidget
+    OutlineWidget,
+    HistoryWidget
   ],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',

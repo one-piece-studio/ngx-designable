@@ -79,6 +79,7 @@ export class TreeNodeWidget implements OnChanges, AfterViewInit, OnDestroy {
       const name = this.node.componentName;
       this.component = this.factory.get(name);
       setTimeout(() => {
+        this.container.clear();
         const options = {} as any;
         if (this.children?.nativeElement) {
           options['projectableNodes'] = [[this.children.nativeElement.content]];

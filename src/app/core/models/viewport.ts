@@ -236,6 +236,42 @@ export class Viewport {
     return root?.contains(element as any);
   }
 
+  getValidNodeElement(node: TreeNode): Element {
+    const getNodeElement = (node: TreeNode) => {
+      if (!node) return;
+      const ele = this.findElementById(node.id);
+      if (ele) {
+        return ele;
+      } else {
+        return getNodeElement(node.parent);
+      }
+    };
+    return getNodeElement(node);
+  }
+
+  //相对于视口
+  getElementOffsetRect(element: HTMLElement | Element) {
+    const elementRect = element.getBoundingClientRect();
+    if (elementRect) {
+      if (this.isIframe) {
+        return new Rect(
+          elementRect.x + this.contentWindow.scrollX,
+          elementRect.y + this.contentWindow.scrollY,
+          elementRect.width,
+          elementRect.height
+        );
+      } else {
+        return new Rect(
+          (elementRect.x - this.offsetX + this.viewportElement.scrollLeft) / this.scale,
+          (elementRect.y - this.offsetY + this.viewportElement.scrollTop) / this.scale,
+          elementRect.width,
+          elementRect.height
+        );
+      }
+    }
+    return null;
+  }
+
   getValidNodeRect(node: TreeNode): Rect {
     if (!node) return null;
     const rect = this.getElementRectById(node.id);

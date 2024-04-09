@@ -33,7 +33,8 @@
         "@angular-eslint/component-class-suffix": "off",
         "@angular-eslint/no-host-metadata-property": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        "no-empty": "off"
+        "no-empty": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
       }
     },
     {
