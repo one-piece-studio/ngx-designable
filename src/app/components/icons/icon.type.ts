@@ -34,5 +34,7 @@ export enum IconType {
   Flip = 'Flip',
   Recover = 'Recover',
   Menu = 'Menu',
-  DragMove = 'DragMove'
+  DragMove = 'DragMove',
+  Eye = 'Eye',
+  EyeClose = 'EyeClose'
 }

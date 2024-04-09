@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { DesignerComponent } from '../../components/container/designer.component';
 import { WorkbenchComponent } from '@/app/components/container/workbench.component';
 import { SharedModule } from '@/app/shared/shared.module';
@@ -22,6 +22,7 @@ import { ViewPanelComponent } from '@/app/components/panels/view-panel.component
 import { ViewportPanelComponent } from '@/app/components/panels/viewport-panel.component';
 import { SettingsFormComponent } from '@/app/settings-form/settings-form.component';
 import { ComponentTreeWidget } from '@/app/components/widgets/component-tree/component-tree.widget';
+import { OutlineWidget } from '@/app/components/widgets/outline/outline.widget';
 
 @Component({
   selector: 'app-home',
@@ -42,7 +43,8 @@ import { ComponentTreeWidget } from '@/app/components/widgets/component-tree/com
     ViewPanelComponent,
     ViewportPanelComponent,
     SettingsFormComponent,
-    ComponentTreeWidget
+    ComponentTreeWidget,
+    OutlineWidget
   ],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',
@@ -50,8 +52,8 @@ import { ComponentTreeWidget } from '@/app/components/widgets/component-tree/com
 })
 export class HomeComponent implements OnInit {
   resourceList: IResourceLike[] = [];
-  language: string = '中文';
-  constructor() {}
+  language: string = GlobalRegistry.getDesignerLanguage();
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.registerBehavior();
@@ -383,5 +385,10 @@ export class HomeComponent implements OnInit {
       ]
     });
     this.resourceList = [Input, Card];
+  }
+
+  changeLanguage(ev: string) {
+    GlobalRegistry.setDesignerLanguage(ev);
+    this.cdr.detectChanges();
   }
 }

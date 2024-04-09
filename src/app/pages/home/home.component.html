@@ -9,7 +9,9 @@
           <app-resource title="sources.Displays" [sources]="resourceList"></app-resource>
           <app-resource title="sources.Feedbacks" [sources]="resourceList"></app-resource>
         </app-composite-panel-item>
-        <app-composite-panel-item title="panels.OutlinedTree" icon="Outline"></app-composite-panel-item>
+        <app-composite-panel-item title="panels.OutlinedTree" icon="Outline">
+          <app-outline></app-outline>
+        </app-composite-panel-item>
         <app-composite-panel-item title="panels.History" icon="History"></app-composite-panel-item>
       </app-composite-panel>
       <app-workspace-panel>
@@ -36,9 +38,9 @@
 
 <ng-template #action>
   <div class="flex ml-2 gap-2 h-10 items-center">
-    <nz-radio-group [(ngModel)]="language">
-      <label nz-radio-button nzValue="English">English</label>
-      <label nz-radio-button nzValue="中文">中文</label>
+    <nz-radio-group [(ngModel)]="language" (ngModelChange)="changeLanguage($event)">
+      <label nz-radio-button nzValue="en-us">English</label>
+      <label nz-radio-button nzValue="zh-cn">中文</label>
     </nz-radio-group>
 
     <button nz-button>保存</button>
