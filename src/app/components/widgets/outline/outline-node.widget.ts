@@ -110,7 +110,7 @@ export class OutlineNodeWidget implements OnChanges, AfterViewInit {
   ngAfterViewInit(): void {
     autorun(() => {
       const selectedIds = this.selection?.selected || [];
-      const id = this.node.id;
+      const id = this.node?.id;
       const element = this.container.nativeElement;
       if (!element) return;
       if (selectedIds.includes(id)) {

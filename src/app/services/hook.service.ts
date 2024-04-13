@@ -75,4 +75,15 @@ export class HookService {
     const operation = this.useOperation(workspaceId);
     return operation?.hover;
   }
+
+  useSelected(workspaceId?: string) {
+    const selection = this.useSelection(workspaceId);
+    return selection?.selected || [];
+  }
+
+  useSelectedNode(workspaceId?: string) {
+    const selected = this.useSelected(workspaceId);
+    const tree = this.useTree(workspaceId);
+    return tree?.findById(selected[0]);
+  }
 }

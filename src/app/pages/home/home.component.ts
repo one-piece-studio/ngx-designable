@@ -20,10 +20,10 @@ import { IconRegister } from '@/app/components/icons/icon.register';
 import { ViewToolsWidget } from '@/app/components/widgets/view-tools/view-tools.widget';
 import { ViewPanelComponent } from '@/app/components/panels/view-panel.component';
 import { ViewportPanelComponent } from '@/app/components/panels/viewport-panel.component';
-import { SettingsFormComponent } from '@/app/settings-form/settings-form.component';
 import { ComponentTreeWidget } from '@/app/components/widgets/component-tree/component-tree.widget';
 import { OutlineWidget } from '@/app/components/widgets/outline/outline.widget';
 import { HistoryWidget } from '@/app/components/widgets/history/history.widget';
+import { SettingsFormModule } from '@/app/settings-form/settings-form.module';
 
 @Component({
   selector: 'app-home',
@@ -43,10 +43,10 @@ import { HistoryWidget } from '@/app/components/widgets/history/history.widget';
     ViewToolsWidget,
     ViewPanelComponent,
     ViewportPanelComponent,
-    SettingsFormComponent,
     ComponentTreeWidget,
     OutlineWidget,
-    HistoryWidget
+    HistoryWidget,
+    SettingsFormModule
   ],
   providers: [{ provide: IconFactory, useClass: IconRegister }, IconFactoryProvider],
   templateUrl: './home.component.html',
@@ -115,89 +115,93 @@ export class HomeComponent implements OnInit {
       designerProps: {
         propsSchema: {
           type: 'object',
-          $namespace: 'Field',
+          // $namespace: 'Field',
           properties: {
-            'field-properties': {
-              type: 'void',
-              'x-component': 'CollapseItem',
-              title: '字段属性',
-              properties: {
-                title: {
-                  type: 'string',
-                  'x-decorator': 'FormItem',
-                  'x-component': 'Input'
-                },
-
-                hidden: {
-                  type: 'string',
-                  'x-decorator': 'FormItem',
-                  'x-component': 'Switch'
-                },
-                default: {
-                  'x-decorator': 'FormItem',
-                  'x-component': 'ValueInput'
-                },
-                test: {
-                  type: 'void',
-                  title: '测试',
-                  'x-decorator': 'FormItem',
-                  'x-component': 'DrawerSetter',
-                  'x-component-props': {
-                    text: '打开抽屉'
-                  },
-                  properties: {
-                    test: {
-                      type: 'string',
-                      title: '测试输入',
-                      'x-decorator': 'FormItem',
-                      'x-component': 'Input'
-                    }
-                  }
-                }
-              }
-            },
-
-            'component-styles': {
-              type: 'void',
-              title: '样式',
-              'x-component': 'CollapseItem',
-              properties: {
-                'style.width': {
-                  type: 'string',
-                  'x-decorator': 'FormItem',
-                  'x-component': 'SizeInput'
-                },
-                'style.height': {
-                  type: 'string',
-                  'x-decorator': 'FormItem',
-                  'x-component': 'SizeInput'
-                },
-                'style.display': {
-                  'x-component': 'DisplayStyleSetter'
-                },
-                'style.background': {
-                  'x-component': 'BackgroundStyleSetter'
-                },
-                'style.boxShadow': {
-                  'x-component': 'BoxShadowStyleSetter'
-                },
-                'style.font': {
-                  'x-component': 'FontStyleSetter'
-                },
-                'style.margin': {
-                  'x-component': 'BoxStyleSetter'
-                },
-                'style.padding': {
-                  'x-component': 'BoxStyleSetter'
-                },
-                'style.borderRadius': {
-                  'x-component': 'BorderRadiusStyleSetter'
-                },
-                'style.border': {
-                  'x-component': 'BorderStyleSetter'
-                }
-              }
+            title: {
+              title: '标题',
+              type: 'string'
             }
+            // 'field-properties': {
+            //   type: 'void',
+            //   'x-component': 'CollapseItem',
+            //   title: '字段属性',
+            //   properties: {
+            //     title: {
+            //       type: 'string',
+            //       'x-decorator': 'FormItem',
+            //       'x-component': 'Input'
+            //     },
+            //
+            //     hidden: {
+            //       type: 'string',
+            //       'x-decorator': 'FormItem',
+            //       'x-component': 'Switch'
+            //     },
+            //     default: {
+            //       'x-decorator': 'FormItem',
+            //       'x-component': 'ValueInput'
+            //     },
+            //     test: {
+            //       type: 'void',
+            //       title: '测试',
+            //       'x-decorator': 'FormItem',
+            //       'x-component': 'DrawerSetter',
+            //       'x-component-props': {
+            //         text: '打开抽屉'
+            //       },
+            //       properties: {
+            //         test: {
+            //           type: 'string',
+            //           title: '测试输入',
+            //           'x-decorator': 'FormItem',
+            //           'x-component': 'Input'
+            //         }
+            //       }
+            //     }
+            //   }
+            // },
+            //
+            // 'component-styles': {
+            //   type: 'void',
+            //   title: '样式',
+            //   'x-component': 'CollapseItem',
+            //   properties: {
+            //     'style.width': {
+            //       type: 'string',
+            //       'x-decorator': 'FormItem',
+            //       'x-component': 'SizeInput'
+            //     },
+            //     'style.height': {
+            //       type: 'string',
+            //       'x-decorator': 'FormItem',
+            //       'x-component': 'SizeInput'
+            //     },
+            //     'style.display': {
+            //       'x-component': 'DisplayStyleSetter'
+            //     },
+            //     'style.background': {
+            //       'x-component': 'BackgroundStyleSetter'
+            //     },
+            //     'style.boxShadow': {
+            //       'x-component': 'BoxShadowStyleSetter'
+            //     },
+            //     'style.font': {
+            //       'x-component': 'FontStyleSetter'
+            //     },
+            //     'style.margin': {
+            //       'x-component': 'BoxStyleSetter'
+            //     },
+            //     'style.padding': {
+            //       'x-component': 'BoxStyleSetter'
+            //     },
+            //     'style.borderRadius': {
+            //       'x-component': 'BorderRadiusStyleSetter'
+            //     },
+            //     'style.border': {
+            //       'x-component': 'BorderStyleSetter'
+            //     }
+            //   }
+            // }
           }
         }
       },

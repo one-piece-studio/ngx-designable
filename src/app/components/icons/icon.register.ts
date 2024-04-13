@@ -36,6 +36,7 @@ import { RecoverSvg } from '@/app/components/icons/recover';
 import { MenuSvg } from '@/app/components/icons/menu';
 import { DragMoveSvg } from '@/app/components/icons/dragmove';
 import { EyeCloseSvg, EyeSvg } from '@/app/components/icons/eyes';
+import { PositionSvg } from '@/app/components/icons/position';
 
 export class IconRegister extends IconFactory {
   constructor() {
@@ -78,5 +79,6 @@ export class IconRegister extends IconFactory {
     this.register(IconType.DragMove, DragMoveSvg);
     this.register(IconType.Eye, EyeSvg);
     this.register(IconType.EyeClose, EyeCloseSvg);
+    this.register(IconType.Position, PositionSvg);
   }
 }

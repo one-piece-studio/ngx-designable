@@ -36,5 +36,6 @@ export enum IconType {
   Menu = 'Menu',
   DragMove = 'DragMove',
   Eye = 'Eye',
-  EyeClose = 'EyeClose'
+  EyeClose = 'EyeClose',
+  Position = 'Position'
 }

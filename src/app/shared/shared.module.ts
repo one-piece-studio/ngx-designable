@@ -6,8 +6,16 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 
-const ZORRO_MODULES = [NzButtonModule, NzEmptyModule, NzRadioModule, NzInputModule, NzInputNumberModule];
+const ZORRO_MODULES = [
+  NzButtonModule,
+  NzEmptyModule,
+  NzRadioModule,
+  NzInputModule,
+  NzInputNumberModule,
+  NzBreadCrumbModule
+];
 
 @NgModule({
   declarations: [],
